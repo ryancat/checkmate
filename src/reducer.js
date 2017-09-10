@@ -29,7 +29,7 @@ const initMapState = {
   dirty: false
 }
 
-function mapReducer (state = initMapState, action = {}) {
+function gameMapReducer (state = initMapState, action = {}) {
   switch (action.type) {
     default:
       return state
@@ -51,7 +51,7 @@ function statReducer (state = initStatState, action = {}) {
 export default combineReducer({
   player: playerReducer,
   enemy: enemyReducer,
-  map: mapReducer,
+  gameMap: gameMapReducer,
   stat: statReducer
 })
 
