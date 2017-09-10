@@ -10,7 +10,8 @@
     "lint": "esw webpack.config.* src tools",
     "lint:watch": "npm run lint -- --watch",
     "test": "mocha --reporter progress tools/testSetup.js \"src/**/*.test.js\"",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "build:production": "babel-node tools/productionBundle.js"
   },
   "author": "Ryan Chen",
   "license": "MIT",

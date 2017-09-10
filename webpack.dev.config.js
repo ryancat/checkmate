@@ -22,7 +22,7 @@ export default {
   module: {
     loaders: [
       {test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel-loader']},
-      {test: /(\.scss)$/, loaders: ['style-loader', 'css-loader', 'sass-loader']}
+      {test: /(\.scss)$/, include: path.join(__dirname, 'src'), loaders: ['style-loader', 'css-loader', 'sass-loader']}
     ]
   }
 };
