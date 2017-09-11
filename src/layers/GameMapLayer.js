@@ -1,7 +1,5 @@
 import BaseLayer from './BaseLayer'
 import {defaultTheme} from '../theme'
-import Player from '../components/Player'
-import Enemy from '../components/Enemy'
 import Block from '../components/Block'
 
 import store from '../store'
@@ -38,13 +36,13 @@ export default class GameMapLayer extends BaseLayer {
         y = 0,
         xs = [],
         ys = [],
-        {columns, rows, width, height, style} = this.state,
+        {columns, rows, width, height} = this.state,
         widthPerBlock = width / columns,
         heightPerBlock = height / rows
     
     this.element.width = width
     this.element.height = height
-    this.context.fillStyle = style.backgroundColor || defaultTheme.DEFAULT_BACKGROUND_COLOR
+    this.context.fillStyle = defaultTheme.DEFAULT_BACKGROUND_COLOR
     this.context.fillRect(0, 0, width, height)
 
     for (x = 0; x < width; x += widthPerBlock) {
@@ -52,5 +50,7 @@ export default class GameMapLayer extends BaseLayer {
         this.context.strokeRect(x, y, widthPerBlock, heightPerBlock)
       }
     }
+
+    this.dirty = false
   }
 }

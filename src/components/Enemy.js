@@ -6,6 +6,7 @@ export default class Enemy extends Stone {
     super(props)
     
     this.type = stoneType.ENEMY
+    this.isCopycat = props.isCopycat
   }
 }
 
