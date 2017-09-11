@@ -12,13 +12,22 @@ function playerReducer (state = initPlayerState, action = {}) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
       // console.log(action)
-      const {levelPlayerState} = levelGenerator.createLevel(action.level)
+      const {levelPlayerState, levelState} = levelGenerator.createLevel(action.level)
+      // Compute the actual rows and columns for blocks
+      const {widthPercentage, heightPercentage, totalBlocks} = levelState,
+            width = widthPercentage * action.width,
+            height = heightPercentage * action.height,
+            position = new Position({
+              totalBlocks,
+              index: levelPlayerState.player
+            })
+
       return Object.assign({}, levelPlayerState, {
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
     }
-    
+
     default:
       return state
   }

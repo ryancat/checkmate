@@ -7,8 +7,11 @@ export const defaultTheme = {
 export const defaultConfig = {
   enemyPercentage: 0.2,
   blockPercentage: 0.1,
-  width: 800,
-  height: 600,
-  rows: 6,
-  columns: 8
+  widthPercentage: 1,
+  heightPercentage: 1,
+  // width: 1,
+  // height: 0.9,
+  totalBlocks: 64,
+  // rows: 8,
+  // columns: 8
 }

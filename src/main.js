@@ -32,7 +32,10 @@ let game = gameLoop({
     layers[layerType.ENEMY] = new EnemyLayer(rootContainer)
     layers[layerType.PLAYER] = new PlayerLayer(rootContainer)
 
-    store.dispatch(action.goToLevel(1))
+    store.dispatch(action.goToLevel(1, {
+      width: rootContainer.offsetWidth,
+      height: rootContainer.offsetHeight
+    }))
   },
   /**
    * Update the game state for each frame
@@ -54,5 +57,11 @@ let game = gameLoop({
     })
   }
 })
+
+// // Setup listeners
+// window.onload = window.onresize = function() {
+//   canvas.width = window.innerWidth;
+//   canvas.height = window.innerHeight;   
+// }
 
 game.start()
