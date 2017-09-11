@@ -1,9 +1,12 @@
 import {combineReducer} from './stateManager'
+import {stateKey} from './enums'
+import levelGenerator from './levelGenerator'
+import {
+  GO_TO_LEVEL
+} from './action'
 
 /*** Player Reducer ***/
-const initPlayerState = {
-  dirty: false
-}
+const initPlayerState = {}
 
 function playerReducer (state = initPlayerState, action = {}) {
   switch (action.type) {
@@ -13,9 +16,7 @@ function playerReducer (state = initPlayerState, action = {}) {
 }
 
 /*** Enemy Reducer ***/
-const initEnemyState = {
-  dirty: false
-}
+const initEnemyState = {}
 
 function enemyReducer (state = initEnemyState, action = {}) {
   switch (action.type) {
@@ -25,21 +26,25 @@ function enemyReducer (state = initEnemyState, action = {}) {
 }
 
 /*** Map Reducer ***/
-const initMapState = {
-  dirty: false
-}
+const initGameMapState = {}
 
-function gameMapReducer (state = initMapState, action = {}) {
+function gameMapReducer (state = initGameMapState, action = {}) {
   switch (action.type) {
+    case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
+      // console.log(action)
+      const levelState = levelGenerator.createLevel(action.level)
+      return Object.assign({}, levelState.gameMapState, {
+        dirty: true
+      })
+    }
+
     default:
       return state
   }
 }
 
 /*** Stat Reducer ***/
-const initStatState = {
-  dirty: false
-}
+const initStatState = {}
 
 function statReducer (state = initStatState, action = {}) {
   switch (action.type) {
@@ -48,12 +53,13 @@ function statReducer (state = initStatState, action = {}) {
   }
 }
 
-export default combineReducer({
-  player: playerReducer,
-  enemy: enemyReducer,
-  gameMap: gameMapReducer,
-  stat: statReducer
-})
+let reducerMap = {}
+reducerMap[stateKey.PLAYER] = playerReducer
+reducerMap[stateKey.ENEMY] = enemyReducer
+reducerMap[stateKey.GAME_MAP] = gameMapReducer
+reducerMap[stateKey.STAT] = statReducer
+
+export default combineReducer(reducerMap)
 
 // const reducer1 = (state = {}, action) => {
 

@@ -35,7 +35,7 @@ export default (config = {}) => {
             update(dt)
             gameLoop._accumulator -= dt
           }
-          render(dt)
+          render()
         }
         gameLoop._loop(now)
       })

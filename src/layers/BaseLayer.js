@@ -1,31 +1,29 @@
-import {defaultTheme} from '../theme'
-
 export default class BaseLayer {
-  constructor (props = {}, container) {
+  constructor (container) {
     if (!container) {
       throw Error ('No game map container defined')
     }
 
     this.container = container
-    this.props = props
-    this.init()
+    this.dirty = false
+    this.state = {}
+    
+    this._addCanvasElement()
   }
 
-  /**
-   * Game init logic
-   * - Create game layers
-   */
-  init () {
+  _addCanvasElement () {
     this.element = document.createElement('canvas')
-
-    // Set config to layer
-    this.element.width = this.props.width
-    this.element.height = this.props.height
     this.context = this.element.getContext('2d')
-
-    this.context.fillStyle = this.props.backgroundColor || defaultTheme.DEFAULT_BACKGROUND_COLOR
-    this.context.fillRect(0, 0, this.element.width, this.element.height)
-
     this.container.appendChild(this.element)
+  }
+
+  // to be overwritten
+  update () {
+
+  }
+
+  // to be overwritten
+  render () {
+
   }
 }

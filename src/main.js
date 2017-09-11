@@ -1,18 +1,22 @@
-import {createStore} from './stateManager'
-import reducer from './reducer'
+import store from './store'
+import {action} from './action'
 import gameLoop from './gameLoop'
+
 import GameMapLayer from './layers/GameMapLayer'
+import StatLayer from './layers/StatLayer'
 import PlayerLayer from './layers/PlayerLayer'
 import EnemyLayer from './layers/EnemyLayer'
+import {layerType} from './enums'
 
 import './main.scss'
 
-// Create store for the game
-let {dispatch} = createStore(reducer)
 const rootContainer = document.getElementById('root')
-let gameMapLayer = null
-let playerLayer = null
-let enemyLayer = null
+
+let layers = []
+// let gameMapLayer = null
+// let statLayer = null
+// let playerLayer = null
+// let enemyLayer = null
 
 let game = gameLoop({
   fps: 60,
@@ -23,26 +27,31 @@ let game = gameLoop({
    * - Init game state
    */
   init: () => {
-    gameMapLayer = new GameMapLayer({
-      width: 800,
-      height: 600
-    }, rootContainer)
+    layers[layerType.GAME_MAP] = new GameMapLayer(rootContainer)
+    layers[layerType.STAT] = new StatLayer(rootContainer)
+    layers[layerType.ENEMY] = new EnemyLayer(rootContainer)
+    layers[layerType.PLAYER] = new PlayerLayer(rootContainer)
 
-    playerLayer = new PlayerLayer({
-      width: 800,
-      height: 600
-    }, rootContainer)
-
-    enemyLayer = new EnemyLayer({
-      width: 800,
-      height: 600
-    }, rootContainer)
+    store.dispatch(action.goToLevel(1))
   },
-
-  update: () => {
+  /**
+   * Update the game state for each frame
+   * @param  {Number} dt - The time difference since last run
+   */
+  update: (dt) => {
+    layers.forEach((layer) => {
+      layer.update(dt)
+    })
   },
-
+  /**
+   * Render the game layers with current game state 
+   */
   render: () => {
+    layers.forEach((layer) => {
+      if (layer.dirty) {
+        layer.render()
+      }
+    })
   }
 })
 
