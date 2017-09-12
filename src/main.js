@@ -95,20 +95,16 @@ document.addEventListener('keyup', (evt) => {
 })
 
 // For mobile
-let touches
-function resetTouches () {
-  touches = {
-    touchstart: Object.assign({}, {
-      x: -1,
-      y: -1
-    }),
-    touchmove: Object.assign({}, {
-      x: -1,
-      y: -1
-    })
-  }
+let touches = {
+  touchstart: Object.assign({}, {
+    x: -1,
+    y: -1
+  }),
+  touchmove: Object.assign({}, {
+    x: -1,
+    y: -1
+  })
 }
-resetTouches()
 
 function handleTouch (evt) {
   if (typeof evt.touches === 'undefined') {
