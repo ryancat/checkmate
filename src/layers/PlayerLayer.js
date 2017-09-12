@@ -49,7 +49,7 @@ export default class PlayerLayer extends BaseLayer {
     this.element.height = height
     
     drawArc(this.context, {
-      fillStyle: defaultTheme.DEFAULT_PLAYER_COLOR,
+      fillStyle: defaultTheme.PLAYER_COLOR,
       x: centerX,
       y: centerY,
       radius,

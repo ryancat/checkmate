@@ -33,11 +33,7 @@ export default class GameMapLayer extends BaseLayer {
       return
     }
 
-    let x = 0,
-        y = 0,
-        xs = [],
-        ys = [],
-        {columns, rows, blocks} = this.state,
+    let {columns, rows, blocks} = this.state,
         width = this.container.offsetWidth,
         height = this.container.offsetHeight,
         widthPerBlock = width / columns,
@@ -45,14 +41,30 @@ export default class GameMapLayer extends BaseLayer {
     
     this.element.width = width
     this.element.height = height
-    this.context.fillStyle = defaultTheme.DEFAULT_BACKGROUND_COLOR
+    this.context.fillStyle = defaultTheme.BACKGROUND_COLOR
     this.context.fillRect(0, 0, width, height)
 
-    for (x = 0; x < width; x += widthPerBlock) {
-      for (y = 0; y < height; y += heightPerBlock) {
-        this.context.strokeRect(x, y, widthPerBlock, heightPerBlock)
-      }
+    this.context.fillStyle = defaultTheme.EDGE_COLOR
+    this.context.beginPath()
+    for (let i = 0; i <= columns; i++) {
+      let x = i * widthPerBlock
+      this.context.moveTo(x, 0)
+      this.context.lineTo(x, height)
+      this.context.stroke()
     }
+
+    for (let j = 0; j <= rows; j++) {
+      let y = j * heightPerBlock
+      this.context.moveTo(0, y)
+      this.context.lineTo(width, y)
+      this.context.stroke()
+    }
+
+    blocks.forEach((block) => {
+      let {row, column} = block.position
+      this.context.fillStyle = defaultTheme.OBSTACLE_BLOCK_COLOR
+      this.context.fillRect(column * widthPerBlock, row * heightPerBlock, widthPerBlock, heightPerBlock)
+    })
 
     this.dirty = false
   }

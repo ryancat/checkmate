@@ -1,7 +1,9 @@
 export const defaultTheme = {
-  DEFAULT_BACKGROUND_COLOR: '#ffce9e',
-  DEFAULT_PLAYER_COLOR: '#ffffff',
-  DEFAULT_ENEMY_COLOR: '#000000'
+  BACKGROUND_COLOR: '#ffce9e',
+  PLAYER_COLOR: '#ffffff',
+  ENEMY_COLOR: '#000000',
+  EDGE_COLOR: '#000000',
+  OBSTACLE_BLOCK_COLOR: '#b5b5b5'
 }
 
 export const defaultConfig = {

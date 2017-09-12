@@ -54,7 +54,7 @@ export default class EnemyLayer extends BaseLayer {
           radius = Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2
 
       drawArc(this.context, {
-        fillStyle: enemy.isCopycat ? defaultTheme.DEFAULT_PLAYER_COLOR : defaultTheme.DEFAULT_ENEMY_COLOR,
+        fillStyle: enemy.isCopycat ? defaultTheme.PLAYER_COLOR : defaultTheme.ENEMY_COLOR,
         x: centerX,
         y: centerY,
         radius,
