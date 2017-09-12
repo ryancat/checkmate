@@ -13,7 +13,7 @@ export default class GameMapLayer extends BaseLayer {
     this.stateKey = stateKey.GAME_MAP
   }
 
-  update (changeSet = {}) {
+  update () {
     let newState = store.getState(this.stateKey)
 
     // Do nothing if the state is dirty
@@ -28,7 +28,7 @@ export default class GameMapLayer extends BaseLayer {
     store.dispatch(action.updateDirty(false, this.stateKey))
   }
 
-  render () {
+  render (dt) {
     if (!this.dirty) {
       return
     }

@@ -37,18 +37,18 @@ let game = gameLoop({
    * Update the game state for each frame
    * @param  {Number} dt - The time difference since last run
    */
-  update: (dt) => {
+  update: () => {
     layers.forEach((layer) => {
-      layer.update(dt)
+      layer.update()
     })
   },
   /**
    * Render the game layers with current game state 
    */
-  render: () => {
+  render: (dt) => {
     layers.forEach((layer) => {
       if (layer.dirty) {
-        layer.render()
+        layer.render(dt)
       }
     })
   }
@@ -81,15 +81,6 @@ document.addEventListener('keydown', (evt) => {
         store.dispatch(action.downKeyDown())
         break
     }
-
-    // // Check if there is any hit
-    // let state = store.getState(),
-    //     playerState = state[stateKey.PLAYER],
-    //     enemyState = state[stateKey.ENEMY],
-    //     gameMapState = state[stateKey.GAME_MAP]
-
-    // for 
-
   }
 })
 

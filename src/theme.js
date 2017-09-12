@@ -10,5 +10,7 @@ export const defaultConfig = {
   enemyPercentage: 0.2,
   blockPercentage: 0.1,
   rows: 8,
-  columns: 8
+  columns: 8,
+  playerSpeed: 1,
+  enemySpeed: 1
 }

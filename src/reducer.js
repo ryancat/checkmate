@@ -59,6 +59,7 @@ function canMoveDown (stone, blocks, rows) {
     && obstacleBlockColumnsAtStoneColumn.indexOf(stoneRow + 1) === -1
 }
 
+// Reducers
 function playerReducer (state = initPlayerState, action = {}, storeState) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6

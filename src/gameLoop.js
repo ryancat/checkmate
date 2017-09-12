@@ -32,10 +32,10 @@ export default (config = {}) => {
 
         if (gameLoop._accumulator >= dt) {
           while (gameLoop._accumulator >= dt) {
-            update(dt)
+            update()
             gameLoop._accumulator -= dt
           }
-          render()
+          render(dt)
         }
         gameLoop._loop(now)
       })
