@@ -3,6 +3,7 @@ import {defaultTheme} from '../theme'
 import Block from '../components/Block'
 
 import store from '../store'
+import {action} from '../action'
 import {stateKey, layerType} from '../enums'
 
 export default class GameMapLayer extends BaseLayer {
@@ -19,12 +20,12 @@ export default class GameMapLayer extends BaseLayer {
     if (!newState.dirty) {
       return
     }
-
+    
+    // TODO: update this for more complicated state changes
     this.state = newState
-    this.state.dirty = false
-
     // Determine if we need to dirty the layer for rendering
     this.dirty = true
+    store.dispatch(action.updateDirty(false, this.stateKey))
   }
 
   render () {
@@ -36,7 +37,9 @@ export default class GameMapLayer extends BaseLayer {
         y = 0,
         xs = [],
         ys = [],
-        {columns, rows, width, height} = this.state,
+        {columns, rows, blocks} = this.state,
+        width = this.container.offsetWidth,
+        height = this.container.offsetHeight,
         widthPerBlock = width / columns,
         heightPerBlock = height / rows
     

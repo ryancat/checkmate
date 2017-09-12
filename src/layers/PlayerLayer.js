@@ -3,6 +3,7 @@ import {defaultTheme} from '../theme'
 import Player from '../components/Player'
 
 import store from '../store'
+import {action} from '../action'
 import {stateKey, layerType} from '../enums'
 
 import drawArc from '../shapes/arc'
@@ -21,12 +22,12 @@ export default class PlayerLayer extends BaseLayer {
     if (!newState.dirty) {
       return
     }
-
+    
+    // TODO: update this for more complicated state changes
     this.state = newState
-    this.state.dirty = false
-
     // Determine if we need to dirty the layer for rendering
     this.dirty = true
+    store.dispatch(action.updateDirty(false, this.stateKey))
   }
 
   render () {
@@ -34,18 +35,19 @@ export default class PlayerLayer extends BaseLayer {
       return
     }
 
-    let {columns, rows, width, height, player} = this.state,
+    let {columns, rows, player} = this.state,
+        width = this.container.offsetWidth,
+        height = this.container.offsetHeight,
         widthPerBlock = width / columns,
-        heightPerBlock = height / rows
-    
-    this.element.width = width
-    this.element.height = height
-
-    let {row, column} = player.position,
+        heightPerBlock = height / rows,
+        {row, column} = player.position,
         centerX = column * widthPerBlock + widthPerBlock / 2,
         centerY = row * heightPerBlock + heightPerBlock / 2,
         radius = Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2
 
+    this.element.width = width
+    this.element.height = height
+    
     drawArc(this.context, {
       fillStyle: defaultTheme.DEFAULT_PLAYER_COLOR,
       x: centerX,

@@ -58,10 +58,9 @@ let game = gameLoop({
   }
 })
 
-// // Setup listeners
-// window.onload = window.onresize = function() {
-//   canvas.width = window.innerWidth;
-//   canvas.height = window.innerHeight;   
-// }
+// Setup listeners
+window.onload = window.onresize = function() {
+  store.dispatch(action.updateDirty(true))
+}
 
 game.start()

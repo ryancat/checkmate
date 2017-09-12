@@ -3,6 +3,7 @@ import {defaultTheme} from '../theme'
 import Enemy from '../components/Enemy'
 
 import store from '../store'
+import {action} from '../action'
 import {stateKey, layerType} from '../enums'
 
 import drawArc from '../shapes/arc'
@@ -12,6 +13,7 @@ export default class EnemyLayer extends BaseLayer {
     super(container)
     this.type = layerType.ENEMY
     this.stateKey = stateKey.ENEMY
+    this.enemies = []
   }
 
   update (dt) {
@@ -21,23 +23,27 @@ export default class EnemyLayer extends BaseLayer {
     if (!newState.dirty) {
       return
     }
-
+    
+    // TODO: update this for more complicated state changes
     this.state = newState
-    this.state.dirty = false
-
+    this.enemies = 
     // Determine if we need to dirty the layer for rendering
     this.dirty = true
+    store.dispatch(action.updateDirty(false, this.stateKey))
   }
 
   render () {
+
     if (!this.dirty) {
       return
     }
 
-    let {columns, rows, width, height, enemies} = this.state,
+    let {columns, rows, enemies} = this.state,
+        width = this.container.offsetWidth,
+        height = this.container.offsetHeight,
         widthPerBlock = width / columns,
         heightPerBlock = height / rows
-    
+
     this.element.width = width
     this.element.height = height
 
