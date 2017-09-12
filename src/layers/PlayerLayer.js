@@ -17,13 +17,11 @@ export default class PlayerLayer extends BaseLayer {
 
   update (dt) {
     let newState = store.getState(this.stateKey)
-
     // Do nothing if the state is dirty
     if (!newState.dirty) {
       return
     }
-    
-    // TODO: update this for more complicated state changes
+    // this.state = store.getState(this.stateKey)
     this.state = newState
     // Determine if we need to dirty the layer for rendering
     this.dirty = true

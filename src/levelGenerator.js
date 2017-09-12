@@ -66,8 +66,6 @@ export default {
       }
     }
 
-    console.log(levelCache)
-
     levelCache[level] = {
       gameMapConfig,
       enemyConfig,

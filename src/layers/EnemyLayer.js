@@ -26,7 +26,6 @@ export default class EnemyLayer extends BaseLayer {
     
     // TODO: update this for more complicated state changes
     this.state = newState
-    this.enemies = 
     // Determine if we need to dirty the layer for rendering
     this.dirty = true
     store.dispatch(action.updateDirty(false, this.stateKey))

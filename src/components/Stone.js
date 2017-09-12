@@ -4,7 +4,6 @@ import {stoneType} from '../enums'
 export default class Stone {
   constructor (props) {
     // TODO: check props has all required properties
-    this._props = props
     this.position = new Position(props.row, props.column)
   }
 
@@ -15,6 +14,18 @@ export default class Stone {
 
   moveRight () {
     this.position.moveRight()
+  }
+
+  moveLeft () {
+    this.position.moveLeft()
+  }
+
+  moveUp () {
+    this.position.moveUp()
+  }
+
+  moveDown () {
+    this.position.moveDown()
   }
 }
 

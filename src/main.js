@@ -11,12 +11,8 @@ import {layerType} from './enums'
 import './main.scss'
 
 const rootContainer = document.getElementById('root')
-
 let layers = []
-// let gameMapLayer = null
-// let statLayer = null
-// let playerLayer = null
-// let enemyLayer = null
+let keyMap = {}
 
 let game = gameLoop({
   fps: 60,
@@ -62,5 +58,40 @@ let game = gameLoop({
 window.onload = window.onresize = function() {
   store.dispatch(action.updateDirty(true))
 }
+
+document.addEventListener('keydown', (evt) => {
+  keyMap[evt.keyCode] = keyMap[evt.keyCode] || {
+    keyCode: evt.keyCode
+  }
+  let keyState = keyMap[evt.keyCode]
+
+  if (!keyState.press) {
+    keyState.press = true
+    switch (keyState.keyCode) {
+      case 37: // Left
+        store.dispatch(action.leftKeyDown())
+        break
+      case 38: // Up
+        store.dispatch(action.upKeyDown())
+        break
+      case 39: // Right
+        store.dispatch(action.rightKeyDown())
+        break
+      case 40: // Down
+        store.dispatch(action.downKeyDown())
+        break
+    }
+    
+  }
+})
+
+document.addEventListener('keyup', (evt) => {
+  keyMap[evt.keyCode] = keyMap[evt.keyCode] || {
+    keyCode: evt.keyCode
+  }
+  let keyState = keyMap[evt.keyCode]
+
+  keyState.press = false
+})
 
 game.start()
