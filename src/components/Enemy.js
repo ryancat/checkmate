@@ -8,5 +8,9 @@ export default class Enemy extends Stone {
     this.type = stoneType.ENEMY
     this.isCopycat = props.isCopycat
   }
+
+  toggleKind () {
+    this.isCopycat = !this.isCopycat
+  }
 }
 

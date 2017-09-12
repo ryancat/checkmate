@@ -14,7 +14,52 @@ import {
 /*** Player Reducer ***/
 const initPlayerState = {}
 
-function playerReducer (state = initPlayerState, action = {}) {
+// Helper functions
+function canMoveRight (stone, blocks, columns) {
+  const stoneColumn = stone.position.column,
+        stoneRow = stone.position.row,
+        obstacleBlockColumnsAtStoneRow = blocks.map((block) => {
+          return block.position.row === stoneRow ? block.position.column : -1
+        })
+
+  return stoneColumn < columns - 1 
+    && obstacleBlockColumnsAtStoneRow.indexOf(stoneColumn + 1) === -1
+}
+
+function canMoveLeft (stone, blocks) {
+  const stoneColumn = stone.position.column,
+        stoneRow = stone.position.row,
+        obstacleBlockColumnsAtStoneRow = blocks.map((block) => {
+          return block.position.row === stoneRow ? block.position.column : -1
+        })
+
+  return stoneColumn > 0
+    && obstacleBlockColumnsAtStoneRow.indexOf(stoneColumn - 1) === -1
+}
+
+function canMoveUp (stone, blocks) {
+  const stoneColumn = stone.position.column,
+        stoneRow = stone.position.row,
+        obstacleBlockColumnsAtStoneColumn = blocks.map((block) => {
+          return block.position.column === stoneColumn ? block.position.row : -1
+        })
+
+  return stoneRow > 0
+    && obstacleBlockColumnsAtStoneColumn.indexOf(stoneRow - 1) === -1
+}
+
+function canMoveDown (stone, blocks, rows) {
+  const stoneColumn = stone.position.column,
+        stoneRow = stone.position.row,
+        obstacleBlockColumnsAtStoneColumn = blocks.map((block) => {
+          return block.position.column === stoneColumn ? block.position.row : -1
+        })
+
+  return stoneRow < rows - 1
+    && obstacleBlockColumnsAtStoneColumn.indexOf(stoneRow + 1) === -1
+}
+
+function playerReducer (state = initPlayerState, action = {}, storeState) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
       const {playerConfig} = levelGenerator.createLevel(action.level)
@@ -40,28 +85,40 @@ function playerReducer (state = initPlayerState, action = {}) {
     }
 
     case RIGHT_KEY_DOWN: {
-      state.player.moveRight()
+      if (canMoveRight(state.player, storeState[stateKey.GAME_MAP].blocks, state.columns)) {
+        state.player.moveRight()
+      }
+
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case DOWN_KEY_DOWN: {
-      state.player.moveDown()
+      if (canMoveDown(state.player, storeState[stateKey.GAME_MAP].blocks, state.rows)) {
+        state.player.moveDown()
+      }
+
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case LEFT_KEY_DOWN: {
-      state.player.moveLeft()
+      if (canMoveLeft(state.player, storeState[stateKey.GAME_MAP].blocks)) {
+        state.player.moveLeft()
+      }
+
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case UP_KEY_DOWN: {
-      state.player.moveUp()
+      if (canMoveUp(state.player, storeState[stateKey.GAME_MAP].blocks)) {
+        state.player.moveUp()
+      }
+
       return Object.assign({}, state, {
         dirty: true
       })
@@ -75,7 +132,7 @@ function playerReducer (state = initPlayerState, action = {}) {
 /*** Enemy Reducer ***/
 const initEnemyState = {}
 
-function enemyReducer (state = initEnemyState, action = {}) {
+function enemyReducer (state = initEnemyState, action = {}, storeState) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
       const {enemyConfig} = levelGenerator.createLevel(action.level)
@@ -101,12 +158,24 @@ function enemyReducer (state = initEnemyState, action = {}) {
     }
 
     case RIGHT_KEY_DOWN: {
+      const blocks = storeState[stateKey.GAME_MAP].blocks
+
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          enemy.moveRight()
+          if (canMoveRight(enemy, blocks, state.columns)) {
+            enemy.moveRight()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
         else {
-          enemy.moveLeft()
+          if (canMoveLeft(enemy, blocks)) {
+            enemy.moveLeft()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
       })
       return Object.assign({}, state, {
@@ -115,12 +184,24 @@ function enemyReducer (state = initEnemyState, action = {}) {
     }
 
     case DOWN_KEY_DOWN: {
+      const blocks = storeState[stateKey.GAME_MAP].blocks
+
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          enemy.moveDown()
+          if (canMoveDown(enemy, blocks, state.rows)) {
+            enemy.moveDown()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
         else {
-          enemy.moveUp()
+          if (canMoveUp(enemy, blocks)) {
+            enemy.moveUp()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
       })
       return Object.assign({}, state, {
@@ -129,12 +210,24 @@ function enemyReducer (state = initEnemyState, action = {}) {
     }
 
     case LEFT_KEY_DOWN: {
+      const blocks = storeState[stateKey.GAME_MAP].blocks
+
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          enemy.moveLeft()
+          if (canMoveLeft(enemy, blocks)) {
+            enemy.moveLeft()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
         else {
-          enemy.moveRight()
+          if (canMoveRight(enemy, blocks, state.columns)) {
+            enemy.moveRight()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
       })
       return Object.assign({}, state, {
@@ -143,12 +236,24 @@ function enemyReducer (state = initEnemyState, action = {}) {
     }
 
     case UP_KEY_DOWN: {
+      const blocks = storeState[stateKey.GAME_MAP].blocks
+
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          enemy.moveUp()
+          if (canMoveUp(enemy, blocks)) {
+            enemy.moveUp()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
         else {
-          enemy.moveDown()
+          if (canMoveDown(enemy, blocks, state.rows)) {
+            enemy.moveDown()
+          }
+          else {
+            enemy.toggleKind()
+          }
         }
       })
       return Object.assign({}, state, {
@@ -211,33 +316,3 @@ reducerMap[stateKey.GAME_MAP] = gameMapReducer
 reducerMap[stateKey.STAT] = statReducer
 
 export default combineReducer(reducerMap)
-
-// const reducer1 = (state = {}, action) => {
-
-//   switch (action.type) {
-//     case 'a':
-//       return Object.assign({}, state, {
-//         id: 'a'
-//       })
-//       break
-
-//     default:
-//       return state
-//   }
-
-// }
-
-// const reducer2 = (state = {}, action) => {
-
-//   switch (action.type) {
-//     case 'a':
-//       return Object.assign({}, state, {
-//         id: 'a'
-//       })
-//       break
-
-//     default:
-//       return state
-//   }
-
-// }

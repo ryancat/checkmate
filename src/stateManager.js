@@ -33,7 +33,9 @@ export function createStore (reducer) {
 export function combineReducer (reducerMap = {}) {
   return (state = {}, action = {}) => {
     for (let key in reducerMap) {
-      state[key] = reducerMap[key](state[key], action)
+      // Pass the whole state down as argument for
+      // cross state key access
+      state[key] = reducerMap[key](state[key], action, state)
     }
     return state
   }

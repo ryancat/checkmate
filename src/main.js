@@ -81,7 +81,15 @@ document.addEventListener('keydown', (evt) => {
         store.dispatch(action.downKeyDown())
         break
     }
-    
+
+    // // Check if there is any hit
+    // let state = store.getState(),
+    //     playerState = state[stateKey.PLAYER],
+    //     enemyState = state[stateKey.ENEMY],
+    //     gameMapState = state[stateKey.GAME_MAP]
+
+    // for 
+
   }
 })
 
