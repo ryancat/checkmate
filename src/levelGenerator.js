@@ -18,7 +18,9 @@ export default {
         playerConfig = {
           player: new Player({
             row: playerRow,
-            column: playerColumn
+            column: playerColumn,
+            rows,
+            columns
           }),
           rows,
           columns
@@ -46,7 +48,9 @@ export default {
           // 10% chance of getting a block
           gameMapConfig.blocks.push(new Block({
             row: i,
-            column: j
+            column: j,
+            rows,
+            columns
           }))
         }
         else if (randomChance < blockPercentage + enemyPercentage) {
@@ -54,6 +58,8 @@ export default {
           enemyConfig.enemies.push(new Enemy({
             row: i,
             column: j,
+            rows,
+            columns,
             isCopycat: Math.random() > 0.5
           }))
         }

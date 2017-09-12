@@ -7,5 +7,14 @@ export default class Stone {
     this._props = props
     this.position = new Position(props.row, props.column)
   }
+
+  // isHitOnRight () {
+  //   let isHitOnEdge = this.position.column > this._props.columns,
+  //       isHit
+  // }
+
+  moveRight () {
+    this.position.moveRight()
+  }
 }
 

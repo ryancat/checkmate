@@ -63,7 +63,7 @@ export default class GameMapLayer extends BaseLayer {
     blocks.forEach((block) => {
       let {row, column} = block.position
       this.context.fillStyle = defaultTheme.OBSTACLE_BLOCK_COLOR
-      this.context.fillRect(column * widthPerBlock, row * heightPerBlock, widthPerBlock, heightPerBlock)
+      this.context.fillRect(column * widthPerBlock + 1, row * heightPerBlock + 1, widthPerBlock - 2, heightPerBlock - 2)
     })
 
     this.dirty = false
