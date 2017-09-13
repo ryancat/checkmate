@@ -1,8 +1,12 @@
+import store from './store'
 import {combineReducer} from './stateManager'
 import {stateKey, blockType} from './enums'
 import levelGenerator from './levelGenerator'
 import Position from './components/Position'
+import Player from './components/Player'
+import Enemy from './components/Enemy'
 import {
+  action as actions,
   GO_TO_LEVEL,
   UPDATE_DIRTY,
   RIGHT_KEY_DOWN,
@@ -12,7 +16,10 @@ import {
   PLAYER_HIT_ENEMY,
   ENEMY_HIT_ENEMY,
   ENEMY_HIT_BLOCK,
-  PLAYER_HIT_BLOCK
+  PLAYER_HIT_BLOCK,
+  ENEMY_TO_PLAYER,
+  PLAYER_TO_ENEMY,
+  PLAYER_HIT_PLAYER
 } from './action'
 
 /*** Player Reducer ***/
@@ -27,7 +34,8 @@ function playerReducer (state = initPlayerState, action = {}, storeState) {
       return Object.assign({}, state, {
         rows: playerConfig.rows,
         columns: playerConfig.columns,
-        player: playerConfig.player,
+        players: playerConfig.players,
+        newRenderStates: [],
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -45,35 +53,35 @@ function playerReducer (state = initPlayerState, action = {}, storeState) {
     }
 
     case RIGHT_KEY_DOWN: {
-      state.player.moveRight()
+      state.players.forEach((player) => player.moveRight())
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case DOWN_KEY_DOWN: {
-      state.player.moveDown()
+      state.players.forEach((player) => player.moveDown())
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case LEFT_KEY_DOWN: {
-      state.player.moveLeft()
+      state.players.forEach((player) => player.moveLeft())
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case UP_KEY_DOWN: {
-      state.player.moveUp()
+      state.players.forEach((player) => player.moveUp())
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case PLAYER_HIT_ENEMY: {
-      state.player.die()
+      action.player.die()
       action.enemy.die()
       return Object.assign({}, state, {
         dirty: true
@@ -81,13 +89,48 @@ function playerReducer (state = initPlayerState, action = {}, storeState) {
     }
 
     case PLAYER_HIT_BLOCK: {
-      let player = action.player,
+      let {playerRenderState, block} = action,
+          player = playerRenderState.stone,
           moveHistory = player.moveHistory
 
-      // The last move is discarded when hitting block
-      moveHistory.pop()
+      if (block.type === blockType.BLOCK) {
+        // Enemy will move back when hitting obstacle blocks
+        player.moveBack()
+      }
+      else if (block.type === blockType.TRANSFER_ENEMY) {
+        // enemy.setCopycat(true)
+        let playerIndex = state.players.indexOf(player)
+        state.players.splice(playerIndex, 1)
+        store.dispatch(actions.playerToEnemy(playerRenderState))
+      }
 
-      player.moveTo(moveHistory[moveHistory.length - 1])
+      return Object.assign({}, state, {
+        dirty: true
+      })
+    }
+
+    case PLAYER_HIT_PLAYER: {
+      let {player1, player2} = action
+      // When player hit player, they turn around
+      player1.moveBack()
+      player2.moveBack()
+      
+      return Object.assign({}, state, {
+        dirty: true
+      })
+    }
+
+    case ENEMY_TO_PLAYER: {
+      let {enemyRenderState} = action,
+          enemy = enemyRenderState.stone,
+          newPlayer = new Player({
+            row: enemy.position.row,
+            column: enemy.position.column
+          })
+
+      enemyRenderState.stone = newPlayer
+      state.players.push(newPlayer)
+      state.newRenderStates.push(enemyRenderState)
       return Object.assign({}, state, {
         dirty: true
       })
@@ -110,6 +153,7 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
         rows: enemyConfig.rows,
         columns: enemyConfig.columns,
         enemies: enemyConfig.enemies,
+        newRenderStates: [],
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -192,37 +236,46 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
 
     case ENEMY_HIT_ENEMY: {
       let {enemy1, enemy2} = action
-      if (enemy1.type === enemy2.type) {
-        // When enemy hit enemy, they turn around
-        enemy1.moveBack()
-        enemy2.moveBack()
-      }
-      else {
-        if (enemy1.type === blockType.TRANSFER) {
-          enemy1.die()
-        }
-
-        if (enemy2.type === blockType.TRANSFER) {
-          enemy2.die()
-        }
-      }
+      // When enemy hit enemy, they turn around
+      enemy1.moveBack()
+      enemy2.moveBack()
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case ENEMY_HIT_BLOCK: {
-      let {enemy, block} = action,
+      let {enemyRenderState, block} = action,
+          enemy = enemyRenderState.stone,
           moveHistory = enemy.moveHistory
 
       if (block.type === blockType.BLOCK) {
         // Enemy will move back when hitting obstacle blocks
         enemy.moveBack()
       }
-      else if (block.type === blockType.TRANSFER) {
-        enemy.setCopycat(true)
+      else if (block.type === blockType.TRANSFER_PLAYER) {
+        // enemy.setCopycat(true)
+        let enemyIndex = state.enemies.indexOf(enemy)
+        state.enemies.splice(enemyIndex, 1)
+        store.dispatch(actions.enemyToPlayer(enemyRenderState))
       }
 
+      return Object.assign({}, state, {
+        dirty: true
+      })
+    }
+
+    case PLAYER_TO_ENEMY: {
+      let {playerRenderState} = action,
+          player = playerRenderState.stone,
+          newEnemy = new Enemy({
+            row: player.position.row,
+            column: player.position.column
+          })
+
+      playerRenderState.stone = newEnemy
+      state.enemies.push(newEnemy)
+      state.newRenderStates.push(playerRenderState)
       return Object.assign({}, state, {
         dirty: true
       })

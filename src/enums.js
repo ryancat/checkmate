@@ -6,7 +6,8 @@ export const stoneType = {
 
 export const blockType = {
   BLOCK: 'block',
-  TRANSFER: 'transfer'
+  TRANSFER_PLAYER: 'transferPlayer',
+  TRANSFER_ENEMY: 'transferEnemy'
 }
 
 export const layerType = {

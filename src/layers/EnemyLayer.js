@@ -23,7 +23,7 @@ export default class EnemyLayer extends BaseLayer {
       return
     }
 
-    let {columns, rows, enemies} = newState,
+    let {columns, rows, enemies, newRenderStates} = newState,
         width = this.container.offsetWidth,
         height = this.container.offsetHeight,
         widthPerBlock = width / columns,
@@ -42,6 +42,12 @@ export default class EnemyLayer extends BaseLayer {
         stone: enemy
       }
     })
+
+    while (newRenderStates.length > 0) {
+      // Move all new renderstates to current render states
+      // This should always run after we have renderState created
+      this.renderState.push(newRenderStates.pop())
+    }
 
     // We have computed final render state based on new state
     store.dispatch(action.updateDirty(false, this.stateKey))
@@ -63,10 +69,17 @@ export default class EnemyLayer extends BaseLayer {
       })
     }
     else {
-      let cleanCount = 0
+      let cleanCount = 0,
+          removedRenderStates = []
+
       this.renderState.forEach((rstate) => {
-        let fstate = this.finalRenderState.filter((state) => { return state.stone === rstate.stone })[0],
-            deltaDistance = defaultConfig.enemySpeed * dt,
+        let fstate = this.finalRenderState.filter((state) => state.stone === rstate.stone)[0]
+        if (!fstate) {
+          removedRenderStates.push(rstate)
+          return 
+        }
+
+        let deltaDistance = defaultConfig.enemySpeed * dt,
             totalDistanceX = fstate.x - rstate.x,
             totalDistanceY = fstate.y - rstate.y
 
@@ -93,8 +106,12 @@ export default class EnemyLayer extends BaseLayer {
         else {
           rstate.y -= Math.min(deltaDistance, Math.abs(totalDistanceY))
         }
+      })
 
-        
+      // Remove from render states
+      removedRenderStates.forEach((removedRenderState) => {
+        let removedIndex = this.renderState.indexOf(removedRenderState)
+        this.renderState.splice(removedIndex, 1)
       })
     }
 

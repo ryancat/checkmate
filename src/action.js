@@ -8,6 +8,9 @@ export const PLAYER_HIT_ENEMY = 'PLAYER_HIT_ENEMY'
 export const ENEMY_HIT_ENEMY = 'ENEMY_HIT_ENEMY'
 export const ENEMY_HIT_BLOCK = 'ENEMY_HIT_BLOCK'
 export const PLAYER_HIT_BLOCK = 'PLAYER_HIT_BLOCK'
+export const ENEMY_TO_PLAYER = 'ENEMY_TO_PLAYER'
+export const PLAYER_TO_ENEMY = 'PLAYER_TO_ENEMY'
+export const PLAYER_HIT_PLAYER = 'PLAYER_HIT_PLAYER'
 
 export const action = {
   goToLevel: (level, gameEnv = {}) => {
@@ -57,7 +60,8 @@ export const action = {
   playerHitEnemy: (enemy, player) => {
     return {
       type: PLAYER_HIT_ENEMY,
-      enemy
+      enemy,
+      player
     }
   },
 
@@ -69,19 +73,41 @@ export const action = {
     }
   },
 
-  enemyHitBlock: (block, enemy) => {
+  enemyHitBlock: (block, enemyRenderState) => {
     return {
       type: ENEMY_HIT_BLOCK,
-      enemy,
+      enemyRenderState,
       block
     }
   },
 
-  playerHitBlock: (block, player) => {
+  playerHitBlock: (block, playerRenderState) => {
     return {
       type: PLAYER_HIT_BLOCK,
-      player,
+      playerRenderState,
       block
+    }
+  },
+
+  enemyToPlayer: (enemyRenderState) => {
+    return {
+      type: ENEMY_TO_PLAYER,
+      enemyRenderState
+    }
+  },
+
+  playerToEnemy: (playerRenderState) => {
+    return {
+      type: PLAYER_TO_ENEMY,
+      playerRenderState
+    }
+  },
+
+  playerHitPlayer: (player1, player2) => {
+    return {
+      type: PLAYER_HIT_PLAYER,
+      player1,
+      player2
     }
   }
 }

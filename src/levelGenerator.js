@@ -18,12 +18,12 @@ export default {
         playerRow = Math.floor(1 + Math.random() * (rows - 2)),
         playerColumn = Math.floor(1 + Math.random() * (columns - 2)),
         playerConfig = {
-          player: new Player({
+          players: [new Player({
             row: playerRow,
             column: playerColumn,
             rows,
             columns
-          }),
+          })],
           rows,
           columns
         },
@@ -38,19 +38,39 @@ export default {
           columns
         }
 
-    // Generate transfer block
-    let transferBlockRow,
-        transferBlockColumn
+    // Generate transfer player block
+    let transferPlayerBlockRow,
+        transferPlayerBlockColumn
 
     do {
-      transferBlockRow = Math.floor(1 + Math.random() * (rows - 2))
-      transferBlockColumn = Math.floor(1 + Math.random() * (columns - 2))
-    } while (transferBlockRow === playerRow 
-      && transferBlockColumn === playerColumn)
+      transferPlayerBlockRow = Math.floor(1 + Math.random() * (rows - 2))
+      transferPlayerBlockColumn = Math.floor(1 + Math.random() * (columns - 2))
+    } while (transferPlayerBlockRow === playerRow 
+      && transferPlayerBlockColumn === playerColumn)
 
     gameMapConfig.blocks.push(new TransferPlayerBlock({
-      row: transferBlockRow,
-      column: transferBlockColumn,
+      row: transferPlayerBlockRow,
+      column: transferPlayerBlockColumn,
+      rows,
+      columns
+    }))
+
+    // Generate transfer enemy block
+    let transferEnemyBlockRow,
+        transferEnemyBlockColumn
+
+    do {
+      transferEnemyBlockRow = Math.floor(1 + Math.random() * (rows - 2))
+      transferEnemyBlockColumn = Math.floor(1 + Math.random() * (columns - 2))
+    } while ((transferEnemyBlockRow === playerRow 
+        && transferEnemyBlockColumn === playerColumn)
+      || (transferEnemyBlockRow === transferPlayerBlockRow 
+        && transferEnemyBlockColumn === transferPlayerBlockColumn
+      ))
+
+    gameMapConfig.blocks.push(new TransferEnemyBlock({
+      row: transferEnemyBlockRow,
+      column: transferEnemyBlockColumn,
       rows,
       columns
     }))
@@ -69,7 +89,8 @@ export default {
         }
 
         if ((i === playerRow && j === playerColumn)
-          || (i === transferBlockRow && j === transferBlockColumn)) {
+          || (i === transferPlayerBlockRow && j === transferPlayerBlockColumn)
+          || (i === transferEnemyBlockRow && j === transferEnemyBlockColumn)) {
           continue
         }
         
