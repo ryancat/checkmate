@@ -18,51 +18,6 @@ import {
 /*** Player Reducer ***/
 const initPlayerState = {}
 
-// Helper functions
-function canMoveRight (stone, blocks) {
-  const stoneColumn = stone.position.column,
-        stoneRow = stone.position.row,
-        obstacleBlockColumnsAtStoneRow = blocks.map((block) => {
-          return block.position.row === stoneRow ? block.position.column : -1
-        })
-
-  // return obstacleBlockColumnsAtStoneRow.indexOf(stoneColumn + 1) === -1
-  return true
-}
-
-function canMoveLeft (stone, blocks) {
-  const stoneColumn = stone.position.column,
-        stoneRow = stone.position.row,
-        obstacleBlockColumnsAtStoneRow = blocks.map((block) => {
-          return block.position.row === stoneRow ? block.position.column : -1
-        })
-
-  // return obstacleBlockColumnsAtStoneRow.indexOf(stoneColumn - 1) === -1
-  return true
-}
-
-function canMoveUp (stone, blocks) {
-  const stoneColumn = stone.position.column,
-        stoneRow = stone.position.row,
-        obstacleBlockColumnsAtStoneColumn = blocks.map((block) => {
-          return block.position.column === stoneColumn ? block.position.row : -1
-        })
-
-  // return obstacleBlockColumnsAtStoneColumn.indexOf(stoneRow - 1) === -1
-  return true
-}
-
-function canMoveDown (stone, blocks) {
-  const stoneColumn = stone.position.column,
-        stoneRow = stone.position.row,
-        obstacleBlockColumnsAtStoneColumn = blocks.map((block) => {
-          return block.position.column === stoneColumn ? block.position.row : -1
-        })
-
-  // return obstacleBlockColumnsAtStoneColumn.indexOf(stoneRow + 1) === -1
-  return true
-}
-
 // Reducers
 function playerReducer (state = initPlayerState, action = {}, storeState) {
   switch (action.type) {
@@ -90,40 +45,28 @@ function playerReducer (state = initPlayerState, action = {}, storeState) {
     }
 
     case RIGHT_KEY_DOWN: {
-      if (canMoveRight(state.player, storeState[stateKey.GAME_MAP].blocks)) {
-        state.player.moveRight()
-      }
-
+      state.player.moveRight()
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case DOWN_KEY_DOWN: {
-      if (canMoveDown(state.player, storeState[stateKey.GAME_MAP].blocks)) {
-        state.player.moveDown()
-      }
-
+      state.player.moveDown()
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case LEFT_KEY_DOWN: {
-      if (canMoveLeft(state.player, storeState[stateKey.GAME_MAP].blocks)) {
-        state.player.moveLeft()
-      }
-
+      state.player.moveLeft()
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case UP_KEY_DOWN: {
-      if (canMoveUp(state.player, storeState[stateKey.GAME_MAP].blocks)) {
-        state.player.moveUp()
-      }
-
+      state.player.moveUp()
       return Object.assign({}, state, {
         dirty: true
       })
@@ -188,20 +131,10 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
 
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          if (canMoveRight(enemy, blocks)) {
-            enemy.moveRight()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveRight()
         }
         else {
-          if (canMoveLeft(enemy, blocks)) {
-            enemy.moveLeft()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveLeft()
         }
       })
       return Object.assign({}, state, {
@@ -214,20 +147,10 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
 
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          if (canMoveDown(enemy, blocks)) {
-            enemy.moveDown()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveDown()
         }
         else {
-          if (canMoveUp(enemy, blocks)) {
-            enemy.moveUp()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveUp()
         }
       })
       return Object.assign({}, state, {
@@ -240,20 +163,10 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
 
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          if (canMoveLeft(enemy, blocks)) {
-            enemy.moveLeft()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveLeft()
         }
         else {
-          if (canMoveRight(enemy, blocks)) {
-            enemy.moveRight()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveRight()
         }
       })
       return Object.assign({}, state, {
@@ -266,20 +179,10 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
 
       state.enemies.forEach((enemy) => {
         if (enemy.isCopycat) {
-          if (canMoveUp(enemy, blocks)) {
-            enemy.moveUp()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveUp()
         }
         else {
-          if (canMoveDown(enemy, blocks)) {
-            enemy.moveDown()
-          }
-          else {
-            enemy.toggleKind()
-          }
+          enemy.moveDown()
         }
       })
       return Object.assign({}, state, {
