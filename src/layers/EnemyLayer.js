@@ -39,7 +39,7 @@ export default class EnemyLayer extends BaseLayer {
         x: column * widthPerBlock + widthPerBlock / 2,
         y: row * heightPerBlock + heightPerBlock / 2,
         radius: Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2,
-        _enemy: enemy
+        stone: enemy
       }
     })
 
@@ -65,7 +65,7 @@ export default class EnemyLayer extends BaseLayer {
     else {
       let cleanCount = 0
       this.renderState.forEach((rstate) => {
-        let fstate = this.finalRenderState.filter((state) => { return state._enemy === rstate._enemy })[0],
+        let fstate = this.finalRenderState.filter((state) => { return state.stone === rstate.stone })[0],
             deltaDistance = defaultConfig.enemySpeed * dt,
             totalDistanceX = fstate.x - rstate.x,
             totalDistanceY = fstate.y - rstate.y
@@ -100,7 +100,7 @@ export default class EnemyLayer extends BaseLayer {
     this.element.height = this.container.offsetHeight
 
     this.renderState.forEach((rstate) => {
-      let enemy = rstate._enemy
+      let enemy = rstate.stone
       if (enemy.alive) {
         drawArc(this.context, {
           fillStyle: enemy.isCopycat ? defaultTheme.PLAYER_COLOR : defaultTheme.ENEMY_COLOR,

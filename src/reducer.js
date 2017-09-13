@@ -8,7 +8,9 @@ import {
   RIGHT_KEY_DOWN,
   LEFT_KEY_DOWN,
   UP_KEY_DOWN,
-  DOWN_KEY_DOWN
+  DOWN_KEY_DOWN,
+  PLAYER_HIT_ENEMY,
+  ENEMY_HIT_ENEMY
 } from './action'
 
 /*** Player Reducer ***/
@@ -120,6 +122,14 @@ function playerReducer (state = initPlayerState, action = {}, storeState) {
         state.player.moveUp()
       }
 
+      return Object.assign({}, state, {
+        dirty: true
+      })
+    }
+
+    case PLAYER_HIT_ENEMY: {
+      state.player.die()
+      action.enemy.die()
       return Object.assign({}, state, {
         dirty: true
       })
@@ -257,6 +267,14 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
           }
         }
       })
+      return Object.assign({}, state, {
+        dirty: true
+      })
+    }
+
+    case ENEMY_HIT_ENEMY: {
+      action.enemy1.die()
+      action.enemy2.die()
       return Object.assign({}, state, {
         dirty: true
       })

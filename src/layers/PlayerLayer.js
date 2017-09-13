@@ -32,7 +32,8 @@ export default class PlayerLayer extends BaseLayer {
     this.finalRenderState = {
       x: column * widthPerBlock + widthPerBlock / 2,
       y: row * heightPerBlock + heightPerBlock / 2,
-      radius: Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2
+      radius: Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2,
+      stone: player
     }
 
     // We have computed final render state based on new state
@@ -80,13 +81,15 @@ export default class PlayerLayer extends BaseLayer {
     this.element.width = this.container.offsetWidth
     this.element.height = this.container.offsetHeight
     
-    drawArc(this.context, {
-      fillStyle: defaultTheme.PLAYER_COLOR,
-      x: this.renderState.x,
-      y: this.renderState.y,
-      radius: this.renderState.radius,
-      startAngle: 0,
-      endAngle: Math.PI * 2
-    })
+    if (this.renderState.stone.alive) {
+      drawArc(this.context, {
+        fillStyle: defaultTheme.PLAYER_COLOR,
+        x: this.renderState.x,
+        y: this.renderState.y,
+        radius: this.renderState.radius,
+        startAngle: 0,
+        endAngle: Math.PI * 2
+      })
+    }
   }
 }

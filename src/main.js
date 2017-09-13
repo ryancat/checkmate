@@ -14,6 +14,16 @@ const rootContainer = document.getElementById('root')
 let layers = []
 let keyMap = {}
 
+// Helper function
+function isStoneHit(stone1RenderState, stone2RenderState) {
+  if (!stone1RenderState.stone.alive || !stone2RenderState.stone.alive) {
+    return false
+  }
+  
+  const stoneDistance = Math.pow(Math.pow(stone1RenderState.x - stone2RenderState.x, 2) + Math.pow(stone1RenderState.y - stone2RenderState.y, 2), 0.5)
+  return stoneDistance < stone1RenderState.radius + stone2RenderState.radius
+}
+
 let game = gameLoop({
   fps: 60,
 
@@ -47,10 +57,40 @@ let game = gameLoop({
    */
   render: (dt) => {
     layers.forEach((layer) => {
-      if (layer.dirty) {
-        layer.render(dt)
+      layer.render(dt)
+    })
+
+    // Check the render result to see if there is any collision
+    // Check if player hit enemy
+    let playerRenderState = layers[layerType.PLAYER].renderState,
+        enemiesRenderState = layers[layerType.ENEMY].renderState,
+        enemyCount = enemiesRenderState.length
+
+    enemiesRenderState.forEach((enemyRenderState) => {
+      if (isStoneHit(playerRenderState, enemyRenderState)) {
+        store.dispatch(action.playerHitEnemy(enemyRenderState.stone))
       }
     })
+
+    // Check if enemy hit each other
+    enemiesRenderState.forEach((enemyRenderState) => {
+      if (isStoneHit(playerRenderState, enemyRenderState)) {
+        store.dispatch(action.playerHitEnemy(enemyRenderState.stone))
+      }
+    })
+
+    for (let i = 0; i < enemyCount; i++) {
+      for (let j = 0; j < enemyCount; j++) {
+        if (i === j) {
+          continue
+        }
+
+        if (isStoneHit(enemiesRenderState[i], enemiesRenderState[j])) {
+          store.dispatch(action.enemyHitEnemy(enemiesRenderState[i].stone, enemiesRenderState[j].stone))
+        }
+      }
+    }
+    
   }
 })
 

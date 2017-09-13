@@ -6,27 +6,31 @@ export default class Stone {
     // TODO: check props has all required properties
     this.position = new Position(props.row, props.column)
     this.alive = true
+    this.moveHistory = [this.position]
   }
-
-  // isHitOnRight () {
-  //   let isHitOnEdge = this.position.column > this._props.columns,
-  //       isHit
-  // }
 
   moveRight () {
     this.position.moveRight()
+    this.moveHistory.push(this.position)
   }
 
   moveLeft () {
     this.position.moveLeft()
+    this.moveHistory.push(this.position)
   }
 
   moveUp () {
     this.position.moveUp()
+    this.moveHistory.push(this.position)
   }
 
   moveDown () {
     this.position.moveDown()
+    this.moveHistory.push(this.position)
+  }
+
+  die () {
+    this.alive = false
   }
 }
 
