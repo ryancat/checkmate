@@ -83,7 +83,8 @@ export default class PlayerLayer extends BaseLayer {
     
     if (this.renderState.stone.alive) {
       drawArc(this.context, {
-        fillStyle: defaultTheme.PLAYER_COLOR,
+        // fillStyle: defaultTheme.PLAYER_COLOR,
+        fillStyle: '#2b35ff',
         x: this.renderState.x,
         y: this.renderState.y,
         radius: this.renderState.radius,

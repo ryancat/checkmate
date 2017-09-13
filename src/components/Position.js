@@ -19,4 +19,9 @@ export default class Position {
   moveDown () {
     this.row += 1
   }
+
+  moveTo (position) {
+    this.row = position.row
+    this.column = position.column
+  }
 }

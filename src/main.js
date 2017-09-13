@@ -15,13 +15,41 @@ let layers = []
 let keyMap = {}
 
 // Helper function
-function isStoneHit(stone1RenderState, stone2RenderState) {
+function isStoneHit (stone1RenderState, stone2RenderState) {
   if (!stone1RenderState.stone.alive || !stone2RenderState.stone.alive) {
     return false
   }
-  
+
   const stoneDistance = Math.pow(Math.pow(stone1RenderState.x - stone2RenderState.x, 2) + Math.pow(stone1RenderState.y - stone2RenderState.y, 2), 0.5)
   return stoneDistance < stone1RenderState.radius + stone2RenderState.radius
+}
+
+function checkHitBlock (stoneRenderState, gameMapRenderState) {
+  let blockRenderStates = gameMapRenderState.blockRenderStates,
+      blockRenderStatesLength = blockRenderStates.length
+
+  for (let i = 0; i < blockRenderStatesLength; i++) {
+    let blockRenderState = blockRenderStates[i],
+        distanceX = Math.abs(blockRenderState.x + blockRenderState.width / 2 - stoneRenderState.x),
+        distanceY = Math.abs(blockRenderState.y + blockRenderState.height / 2 - stoneRenderState.y),
+        isHitX = distanceX < stoneRenderState.radius + blockRenderState.width / 2,
+        isHitY = distanceY < stoneRenderState.radius + blockRenderState.height / 2
+
+    if (isHitX && isHitY) {
+      return blockRenderState.block
+    }
+  }
+
+  // blockRenderStates.forEach((blockRenderState) => {
+  //   let distanceX = Math.abs(blockRenderState.x + blockRenderState.width / 2 - stoneRenderState.x),
+  //       distanceY = Math.abs(blockRenderState.y + blockRenderState.height / 2 - stoneRenderState.y),
+  //       isHitX = distanceX < stoneRenderState.radius + blockRenderState.width / 2,
+  //       isHitY = distanceY < stoneRenderState.radius + blockRenderState.height / 2
+
+  //   isHit = isHitX || isHitY
+  // })
+
+  return null
 }
 
 let game = gameLoop({
@@ -63,34 +91,40 @@ let game = gameLoop({
     // Check the render result to see if there is any collision
     // Check if player hit enemy
     let playerRenderState = layers[layerType.PLAYER].renderState,
+        gameMapRenderState = layers[layerType.GAME_MAP].renderState,
         enemiesRenderState = layers[layerType.ENEMY].renderState,
         enemyCount = enemiesRenderState.length
 
     enemiesRenderState.forEach((enemyRenderState) => {
       if (isStoneHit(playerRenderState, enemyRenderState)) {
-        store.dispatch(action.playerHitEnemy(enemyRenderState.stone))
+        store.dispatch(action.playerHitEnemy(enemyRenderState.stone, playerRenderState.stone))
       }
     })
 
     // Check if enemy hit each other
-    enemiesRenderState.forEach((enemyRenderState) => {
-      if (isStoneHit(playerRenderState, enemyRenderState)) {
-        store.dispatch(action.playerHitEnemy(enemyRenderState.stone))
-      }
-    })
-
     for (let i = 0; i < enemyCount; i++) {
       for (let j = 0; j < enemyCount; j++) {
         if (i === j) {
           continue
         }
-
         if (isStoneHit(enemiesRenderState[i], enemiesRenderState[j])) {
           store.dispatch(action.enemyHitEnemy(enemiesRenderState[i].stone, enemiesRenderState[j].stone))
         }
       }
     }
-    
+
+    // Check if any stone hit obstacle blocks
+    enemiesRenderState.forEach((enemyRenderState) => {
+      let hitBlock = checkHitBlock(enemyRenderState, gameMapRenderState)
+      if (hitBlock) {
+        store.dispatch(action.enemyHitBlock(hitBlock, enemyRenderState.stone))
+      }
+    })
+
+    let hitBlock = checkHitBlock(playerRenderState, gameMapRenderState)
+    if (hitBlock) {
+      store.dispatch(action.playerHitBlock(hitBlock, playerRenderState.stone))
+    }
   }
 })
 

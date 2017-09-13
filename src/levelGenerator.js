@@ -13,8 +13,8 @@ export default {
     }
 
     let {rows, columns, blockPercentage, enemyPercentage} = defaultConfig, // Update this to create different config per level
-        playerRow = Math.floor(Math.random() * rows),
-        playerColumn = Math.floor(Math.random() * columns),
+        playerRow = Math.floor(1 + Math.random() * (rows - 2)),
+        playerColumn = Math.floor(1 + Math.random() * (columns - 2)),
         playerConfig = {
           player: new Player({
             row: playerRow,
@@ -38,6 +38,17 @@ export default {
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
+        // Generate wall blocks
+        if (i === 0 || j === 0 || i === rows - 1 || j === columns - 1) {
+          gameMapConfig.blocks.push(new Block({
+            row: i,
+            column: j,
+            rows,
+            columns
+          }))
+          continue
+        }
+
         if (i === playerRow && j === playerColumn) {
           continue
         }

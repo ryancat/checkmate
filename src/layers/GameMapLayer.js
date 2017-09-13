@@ -15,17 +15,57 @@ export default class GameMapLayer extends BaseLayer {
 
   update () {
     let newState = store.getState(this.stateKey)
-
     // Do nothing if the state is dirty
     if (!newState.dirty) {
       return
     }
-    
-    // TODO: update this for more complicated state changes
-    this.state = newState
-    // Determine if we need to dirty the layer for rendering
-    this.dirty = true
+
+    let {columns, rows, blocks} = newState,
+        width = this.container.offsetWidth,
+        height = this.container.offsetHeight,
+        widthPerBlock = width / columns,
+        heightPerBlock = height / rows,
+        xLines = [],
+        yLines = [],
+        blockRenderStates
+
+    for (let i = 0; i <= columns; i++) {
+      yLines.push({
+        x: i * widthPerBlock,
+        y0: 0,
+        y1: height
+      })
+    }
+
+    for (let j = 0; j <= rows; j++) {
+      xLines.push({
+        y: j * heightPerBlock,
+        x0: 0,
+        x1: width
+      })
+    }
+
+    blockRenderStates = blocks.map((block) => {
+      return {
+        x: block.position.column * widthPerBlock + 1,
+        y: block.position.row * heightPerBlock + 1,
+        width: widthPerBlock - 2,
+        height: heightPerBlock - 2,
+        block
+      }
+    })
+
+    this.finalRenderState = {
+      xLines, 
+      yLines,
+      blockRenderStates
+    }
+
+    // We have computed final render state based on new state
     store.dispatch(action.updateDirty(false, this.stateKey))
+    // Now that we have new final render state, we need to let
+    // render function to take care of rendering it
+    this.dirty = true
   }
 
   render (dt) {
@@ -33,12 +73,17 @@ export default class GameMapLayer extends BaseLayer {
       return
     }
 
-    let {columns, rows, blocks} = this.state,
-        width = this.container.offsetWidth,
-        height = this.container.offsetHeight,
-        widthPerBlock = width / columns,
-        heightPerBlock = height / rows
-    
+    if (!this.renderState) {
+      this.renderState = Object.assign({}, this.finalRenderState)
+    }
+
+    // There is no change after initial render for game map
+    this.dirty = false
+
+    let width = this.container.offsetWidth
+    let height = this.container.offsetHeight
+    let {xLines, yLines, blockRenderStates} = this.renderState
+
     this.element.width = width
     this.element.height = height
     this.context.fillStyle = defaultTheme.BACKGROUND_COLOR
@@ -46,26 +91,22 @@ export default class GameMapLayer extends BaseLayer {
 
     this.context.fillStyle = defaultTheme.EDGE_COLOR
     this.context.beginPath()
-    for (let i = 0; i <= columns; i++) {
-      let x = i * widthPerBlock
-      this.context.moveTo(x, 0)
-      this.context.lineTo(x, height)
-      this.context.stroke()
-    }
 
-    for (let j = 0; j <= rows; j++) {
-      let y = j * heightPerBlock
-      this.context.moveTo(0, y)
-      this.context.lineTo(width, y)
+    xLines.forEach((xLine) => {
+      this.context.moveTo(xLine.x0, xLine.y)
+      this.context.lineTo(xLine.x1, xLine.y)
       this.context.stroke()
-    }
-
-    blocks.forEach((block) => {
-      let {row, column} = block.position
-      this.context.fillStyle = defaultTheme.OBSTACLE_BLOCK_COLOR
-      this.context.fillRect(column * widthPerBlock + 1, row * heightPerBlock + 1, widthPerBlock - 2, heightPerBlock - 2)
     })
 
-    this.dirty = false
+    yLines.forEach((yLine) => {
+      this.context.moveTo(yLine.x, yLine.y0)
+      this.context.lineTo(yLine.x, yLine.y1)
+      this.context.stroke()
+    })
+
+    blockRenderStates.forEach((blockRenderState) => {
+      this.context.fillStyle = defaultTheme.OBSTACLE_BLOCK_COLOR
+      this.context.fillRect(blockRenderState.x, blockRenderState.y, blockRenderState.width, blockRenderState.height)
+    })
   }
 }

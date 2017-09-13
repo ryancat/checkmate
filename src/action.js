@@ -6,6 +6,8 @@ export const UP_KEY_DOWN = 'UP_KEY_DOWN'
 export const DOWN_KEY_DOWN = 'DOWN_KEY_DOWN'
 export const PLAYER_HIT_ENEMY = 'PLAYER_HIT_ENEMY'
 export const ENEMY_HIT_ENEMY = 'ENEMY_HIT_ENEMY'
+export const ENEMY_HIT_BLOCK = 'ENEMY_HIT_BLOCK'
+export const PLAYER_HIT_BLOCK = 'PLAYER_HIT_BLOCK'
 
 export const action = {
   goToLevel: (level, gameEnv = {}) => {
@@ -52,7 +54,7 @@ export const action = {
     }
   },
 
-  playerHitEnemy: (enemy) => {
+  playerHitEnemy: (enemy, player) => {
     return {
       type: PLAYER_HIT_ENEMY,
       enemy
@@ -64,6 +66,22 @@ export const action = {
       type: ENEMY_HIT_ENEMY,
       enemy1,
       enemy2
+    }
+  },
+
+  enemyHitBlock: (block, enemy) => {
+    return {
+      type: ENEMY_HIT_BLOCK,
+      enemy,
+      block
+    }
+  },
+
+  playerHitBlock: (block, player) => {
+    return {
+      type: PLAYER_HIT_BLOCK,
+      player,
+      block
     }
   }
 }
