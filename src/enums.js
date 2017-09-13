@@ -5,7 +5,8 @@ export const stoneType = {
 }
 
 export const blockType = {
-  BLOCK: 'block'
+  BLOCK: 'block',
+  TRANSFER: 'transfer'
 }
 
 export const layerType = {

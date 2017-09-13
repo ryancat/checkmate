@@ -1,4 +1,6 @@
 import Block from './components/Block'
+import TransferEnemyBlock from './components/TransferEnemyBlock'
+import TransferPlayerBlock from './components/TransferPlayerBlock'
 import Enemy from './components/Enemy'
 import Player from './components/Player'
 
@@ -36,6 +38,23 @@ export default {
           columns
         }
 
+    // Generate transfer block
+    let transferBlockRow,
+        transferBlockColumn
+
+    do {
+      transferBlockRow = Math.floor(1 + Math.random() * (rows - 2))
+      transferBlockColumn = Math.floor(1 + Math.random() * (columns - 2))
+    } while (transferBlockRow === playerRow 
+      && transferBlockColumn === playerColumn)
+
+    gameMapConfig.blocks.push(new TransferPlayerBlock({
+      row: transferBlockRow,
+      column: transferBlockColumn,
+      rows,
+      columns
+    }))
+
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
         // Generate wall blocks
@@ -49,7 +68,8 @@ export default {
           continue
         }
 
-        if (i === playerRow && j === playerColumn) {
+        if ((i === playerRow && j === playerColumn)
+          || (i === transferBlockRow && j === transferBlockColumn)) {
           continue
         }
         
@@ -70,8 +90,7 @@ export default {
             row: i,
             column: j,
             rows,
-            columns,
-            isCopycat: Math.random() > 0.5
+            columns
           }))
         }
       }

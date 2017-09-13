@@ -39,6 +39,12 @@ export default class Stone {
     this.addToMoveHistory(this.position)
   }
 
+  moveBack () {
+    // Discard the current position
+    this.moveHistory.pop()
+    this.moveTo(this.moveHistory[this.moveHistory.length - 1])
+  }
+
   die () {
     this.alive = false
   }

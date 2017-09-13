@@ -93,6 +93,8 @@ export default class EnemyLayer extends BaseLayer {
         else {
           rstate.y -= Math.min(deltaDistance, Math.abs(totalDistanceY))
         }
+
+        
       })
     }
 
@@ -103,7 +105,7 @@ export default class EnemyLayer extends BaseLayer {
       let enemy = rstate.stone
       if (enemy.alive) {
         drawArc(this.context, {
-          fillStyle: enemy.isCopycat ? defaultTheme.PLAYER_COLOR : defaultTheme.ENEMY_COLOR,
+          fillStyle: enemy.fillStyle,
           x: rstate.x,
           y: rstate.y,
           radius: rstate.radius,

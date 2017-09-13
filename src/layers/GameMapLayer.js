@@ -51,6 +51,7 @@ export default class GameMapLayer extends BaseLayer {
         y: block.position.row * heightPerBlock + 1,
         width: widthPerBlock - 2,
         height: heightPerBlock - 2,
+        fillStyle: block.fillStyle,
         block
       }
     })
@@ -105,7 +106,7 @@ export default class GameMapLayer extends BaseLayer {
     })
 
     blockRenderStates.forEach((blockRenderState) => {
-      this.context.fillStyle = defaultTheme.OBSTACLE_BLOCK_COLOR
+      this.context.fillStyle = blockRenderState.fillStyle
       this.context.fillRect(blockRenderState.x, blockRenderState.y, blockRenderState.width, blockRenderState.height)
     })
   }

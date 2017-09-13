@@ -1,5 +1,5 @@
 import {combineReducer} from './stateManager'
-import {stateKey} from './enums'
+import {stateKey, blockType} from './enums'
 import levelGenerator from './levelGenerator'
 import Position from './components/Position'
 import {
@@ -191,23 +191,38 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
     }
 
     case ENEMY_HIT_ENEMY: {
-      action.enemy1.die()
-      action.enemy2.die()
+      let {enemy1, enemy2} = action
+      if (enemy1.type === enemy2.type) {
+        // When enemy hit enemy, they turn around
+        enemy1.moveBack()
+        enemy2.moveBack()
+      }
+      else {
+        if (enemy1.type === blockType.TRANSFER) {
+          enemy1.die()
+        }
+
+        if (enemy2.type === blockType.TRANSFER) {
+          enemy2.die()
+        }
+      }
       return Object.assign({}, state, {
         dirty: true
       })
     }
 
     case ENEMY_HIT_BLOCK: {
-      let enemy = action.enemy,
+      let {enemy, block} = action,
           moveHistory = enemy.moveHistory
 
-      // Enemy will change kind when hitting obstacle blocks
-      enemy.toggleKind()
+      if (block.type === blockType.BLOCK) {
+        // Enemy will move back when hitting obstacle blocks
+        enemy.moveBack()
+      }
+      else if (block.type === blockType.TRANSFER) {
+        enemy.setCopycat(true)
+      }
 
-      // The last move is discarded when hitting block
-      moveHistory.pop()
-      enemy.moveTo(moveHistory[moveHistory.length - 1])
       return Object.assign({}, state, {
         dirty: true
       })
