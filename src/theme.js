@@ -9,7 +9,7 @@ export const defaultTheme = {
 }
 
 export const defaultConfig = {
-  enemyPercentage: 0.02,
+  enemyPercentage: 0.2,
   blockPercentage: 0.1,
   rows: 10,
   columns: 10,
