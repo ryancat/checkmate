@@ -78,7 +78,8 @@ export default class GameMapLayer extends BaseLayer {
       this.renderState = Object.assign({}, this.finalRenderState)
     }
 
-    // There is no change after initial render for game map
+    // There is no animated change after initial render for game map
+    this.renderState = Object.assign({}, this.finalRenderState)
     this.dirty = false
 
     let width = this.container.offsetWidth
