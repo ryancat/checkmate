@@ -5,8 +5,8 @@ export default class Stone {
   constructor (props) {
     // TODO: check props has all required properties
     this.position = new Position(props.row, props.column)
-    this.alive = true
-    this.moveHistory = []
+    this.alive = props.alive || true
+    this.moveHistory = props.moveHistory || []
     this.addToMoveHistory(this.position)
   }
 

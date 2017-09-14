@@ -125,7 +125,9 @@ function playerReducer (state = initPlayerState, action = {}, storeState) {
           enemy = enemyRenderState.stone,
           newPlayer = new Player({
             row: enemy.position.row,
-            column: enemy.position.column
+            column: enemy.position.column,
+            moveHistory: enemy.moveHistory,
+            alive: enemy.alive
           })
 
       enemyRenderState.stone = newPlayer
@@ -270,7 +272,9 @@ function enemyReducer (state = initEnemyState, action = {}, storeState) {
           player = playerRenderState.stone,
           newEnemy = new Enemy({
             row: player.position.row,
-            column: player.position.column
+            column: player.position.column,
+            moveHistory: player.moveHistory,
+            alive: player.alive
           })
 
       playerRenderState.stone = newEnemy
