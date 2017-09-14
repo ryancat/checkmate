@@ -20,12 +20,8 @@ export default {
         playerConfig = {
           players: [new Player({
             row: playerRow,
-            column: playerColumn,
-            rows,
-            columns
-          })],
-          rows,
-          columns
+            column: playerColumn
+          })]
         },
         gameMapConfig = {
           blocks: [],
@@ -33,9 +29,7 @@ export default {
           columns
         },
         enemyConfig = {
-          enemies: [],
-          rows,
-          columns
+          enemies: []
         }
 
     // Generate transfer player block
@@ -50,9 +44,7 @@ export default {
 
     gameMapConfig.blocks.push(new TransferPlayerBlock({
       row: transferPlayerBlockRow,
-      column: transferPlayerBlockColumn,
-      rows,
-      columns
+      column: transferPlayerBlockColumn
     }))
 
     // Generate transfer enemy block
@@ -70,9 +62,7 @@ export default {
 
     gameMapConfig.blocks.push(new TransferEnemyBlock({
       row: transferEnemyBlockRow,
-      column: transferEnemyBlockColumn,
-      rows,
-      columns
+      column: transferEnemyBlockColumn
     }))
 
     for (let i = 0; i < rows; i++) {
@@ -81,9 +71,7 @@ export default {
         if (i === 0 || j === 0 || i === rows - 1 || j === columns - 1) {
           gameMapConfig.blocks.push(new Block({
             row: i,
-            column: j,
-            rows,
-            columns
+            column: j
           }))
           continue
         }
@@ -100,18 +88,14 @@ export default {
           // 10% chance of getting a block
           gameMapConfig.blocks.push(new Block({
             row: i,
-            column: j,
-            rows,
-            columns
+            column: j
           }))
         }
         else if (randomChance < blockPercentage + enemyPercentage) {
           // 30% chance of getting an enemy
           enemyConfig.enemies.push(new Enemy({
             row: i,
-            column: j,
-            rows,
-            columns
+            column: j
           }))
         }
       }

@@ -1,3 +1,6 @@
+import store from './store'
+import {stateKey} from './enums'
+
 export const GO_TO_LEVEL = 'GO_TO_LEVEL'
 export const UPDATE_DIRTY = 'UPDATE_DIRTY'
 export const RIGHT_KEY_DOWN = 'RIGHT_KEY_DOWN'
@@ -11,6 +14,9 @@ export const PLAYER_HIT_BLOCK = 'PLAYER_HIT_BLOCK'
 export const ENEMY_TO_PLAYER = 'ENEMY_TO_PLAYER'
 export const PLAYER_TO_ENEMY = 'PLAYER_TO_ENEMY'
 export const PLAYER_HIT_PLAYER = 'PLAYER_HIT_PLAYER'
+
+export const STONE_HIT_STONE = 'STONE_HIT_STONE'
+export const STONE_HIT_BLOCK = 'STONE_HIT_BLOCK'
 
 export const action = {
   goToLevel: (level, gameEnv = {}) => {
@@ -108,6 +114,23 @@ export const action = {
       type: PLAYER_HIT_PLAYER,
       player1,
       player2
+    }
+  },
+
+
+  stoneHitStone: (stone1, stone2) => {
+    return {
+      type: STONE_HIT_STONE,
+      stone1,
+      stone2
+    }
+  },
+
+  stoneHitBlock: (block, stoneRenderState) => {
+    return {
+      type: STONE_HIT_BLOCK,
+      stoneRenderState,
+      block
     }
   }
 }

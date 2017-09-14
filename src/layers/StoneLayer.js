@@ -1,6 +1,5 @@
 import BaseLayer from './BaseLayer'
 import {defaultTheme, defaultConfig} from '../theme'
-import Player from '../components/Player'
 
 import store from '../store'
 import {action} from '../action'
@@ -8,11 +7,11 @@ import {stateKey, layerType} from '../enums'
 
 import drawArc from '../shapes/arc'
 
-export default class PlayerLayer extends BaseLayer {
+export default class StoneLayer extends BaseLayer {
   constructor (container) {
     super(container)
-    this.type = layerType.PLAYER
-    this.stateKey = stateKey.PLAYER
+    this.type = layerType.STONE
+    this.stateKey = stateKey.STONE
   }
 
   update () {
@@ -22,14 +21,15 @@ export default class PlayerLayer extends BaseLayer {
       return
     }
 
-    let {columns, rows, players, newRenderStates} = newState,
+    let {columns, rows, enemies, players} = newState,
+        stones = enemies.concat(players),
         width = this.container.offsetWidth,
         height = this.container.offsetHeight,
         widthPerBlock = width / columns,
         heightPerBlock = height / rows
 
-    this.finalRenderState = players.map((player) => {
-      let {row, column} = player.position,
+    this.finalRenderState = stones.map((stone) => {
+      let {row, column} = stone.position,
           centerX = column * widthPerBlock + widthPerBlock / 2,
           centerY = row * heightPerBlock + heightPerBlock / 2,
           radius = Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2 
@@ -38,15 +38,15 @@ export default class PlayerLayer extends BaseLayer {
         x: column * widthPerBlock + widthPerBlock / 2,
         y: row * heightPerBlock + heightPerBlock / 2,
         radius: Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2,
-        stone: player
+        stone: stone
       }
     })
 
-    while (newRenderStates.length > 0) {
-      // Move all new renderstates to current render states
-      // This should always run after we have renderState created
-      this.renderState.push(newRenderStates.pop())
-    }
+    // while (newRenderStates.length > 0) {
+    //   // Move all new renderstates to current render states
+    //   // This should always run after we have renderState created
+    //   this.renderState.push(newRenderStates.pop())
+    // }
 
     // We have computed final render state based on new state
     store.dispatch(action.updateDirty(false, this.stateKey))
@@ -56,6 +56,7 @@ export default class PlayerLayer extends BaseLayer {
   }
 
   render (dt) {
+
     if (!this.dirty) {
       return
     }
@@ -72,12 +73,13 @@ export default class PlayerLayer extends BaseLayer {
 
       this.renderState.forEach((rstate) => {
         let fstate = this.finalRenderState.filter((state) => state.stone === rstate.stone)[0]
+        // TODO: may not need this anymore
         if (!fstate) {
           removedRenderStates.push(rstate)
           return 
         }
 
-        let deltaDistance = defaultConfig.enemySpeed * dt,
+        let deltaDistance = defaultConfig.stoneSpeed * dt,
             totalDistanceX = fstate.x - rstate.x,
             totalDistanceY = fstate.y - rstate.y
 
@@ -115,12 +117,12 @@ export default class PlayerLayer extends BaseLayer {
 
     this.element.width = this.container.offsetWidth
     this.element.height = this.container.offsetHeight
-    
+
     this.renderState.forEach((rstate) => {
-      let player = rstate.stone
-      if (player.alive) {
+      let stone = rstate.stone
+      if (stone.alive) {
         drawArc(this.context, {
-          fillStyle: player.fillStyle,
+          fillStyle: stone.fillStyle,
           x: rstate.x,
           y: rstate.y,
           radius: rstate.radius,

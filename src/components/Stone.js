@@ -1,5 +1,6 @@
 import Position from './Position'
 import {stoneType} from '../enums'
+import {defaultTheme} from '../theme'
 
 export default class Stone {
   constructor (props) {
@@ -8,6 +9,17 @@ export default class Stone {
     this.alive = props.alive || true
     this.moveHistory = props.moveHistory || []
     this.addToMoveHistory(this.position)
+  }
+
+  toggleType () {
+    if (this.type === stoneType.PLAYER) {
+      this.type = stoneType.ENEMY
+      this.fillStyle = defaultTheme.ENEMY_COLOR
+    }
+    else {
+      this.type = stoneType.PLAYER
+      this.fillStyle = defaultTheme.PLAYER_COLOR
+    }
   }
 
   addToMoveHistory (position) {

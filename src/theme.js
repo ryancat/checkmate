@@ -13,6 +13,5 @@ export const defaultConfig = {
   blockPercentage: 0.1,
   rows: 10,
   columns: 10,
-  playerSpeed: 0.6,
-  enemySpeed: 0.6
+  stoneSpeed: 0.6
 }
