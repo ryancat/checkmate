@@ -5,7 +5,7 @@ import gameLoop from './gameLoop'
 import GameMapLayer from './layers/GameMapLayer'
 import StatLayer from './layers/StatLayer'
 import StoneLayer from './layers/StoneLayer'
-import {layerType, blockType} from './enums'
+import {layerType, blockType, stoneType} from './enums'
 
 import './main.scss'
 
@@ -57,9 +57,9 @@ let game = gameLoop({
    * - Init game state
    */
   init: () => {
-    layers[layerType.STAT] = new StatLayer(rootContainer)
     layers[layerType.GAME_MAP] = new GameMapLayer(rootContainer)
     layers[layerType.STONE] = new StoneLayer(rootContainer)
+    layers[layerType.STAT] = new StatLayer(rootContainer)
 
     store.dispatch(action.goToLevel(1, {
       width: rootContainer.offsetWidth,
@@ -109,6 +109,29 @@ let game = gameLoop({
         store.dispatch(action.stoneHitBlock(hitBlock, stoneRenderState))
       }
     })
+
+    // Check if players all die
+    let playerAllDie = true,
+        enemyAllDie = true
+    stonesRenderState.forEach((stoneRenderState) => {
+      let stone = stoneRenderState.stone
+
+      if (stone.alive) {
+        if (stone.type === stoneType.PLAYER) {
+          playerAllDie = false
+        }
+        else if (stone.type === stoneType.ENEMY) {
+          enemyAllDie = false
+        }
+      }
+    })
+
+    if (playerAllDie) {
+      store.dispatch(action.playerAllDie())
+    }
+    else if (enemyAllDie) {
+      store.dispatch(action.enemyAllDie())
+    }
   }
 })
 

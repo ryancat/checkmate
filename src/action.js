@@ -63,59 +63,59 @@ export const action = {
     }
   },
 
-  playerHitEnemy: (enemy, player) => {
-    return {
-      type: PLAYER_HIT_ENEMY,
-      enemy,
-      player
-    }
-  },
+  // playerHitEnemy: (enemy, player) => {
+  //   return {
+  //     type: PLAYER_HIT_ENEMY,
+  //     enemy,
+  //     player
+  //   }
+  // },
 
-  enemyHitEnemy: (enemy1, enemy2) => {
-    return {
-      type: ENEMY_HIT_ENEMY,
-      enemy1,
-      enemy2
-    }
-  },
+  // enemyHitEnemy: (enemy1, enemy2) => {
+  //   return {
+  //     type: ENEMY_HIT_ENEMY,
+  //     enemy1,
+  //     enemy2
+  //   }
+  // },
 
-  enemyHitBlock: (block, enemyRenderState) => {
-    return {
-      type: ENEMY_HIT_BLOCK,
-      enemyRenderState,
-      block
-    }
-  },
+  // enemyHitBlock: (block, enemyRenderState) => {
+  //   return {
+  //     type: ENEMY_HIT_BLOCK,
+  //     enemyRenderState,
+  //     block
+  //   }
+  // },
 
-  playerHitBlock: (block, playerRenderState) => {
-    return {
-      type: PLAYER_HIT_BLOCK,
-      playerRenderState,
-      block
-    }
-  },
+  // playerHitBlock: (block, playerRenderState) => {
+  //   return {
+  //     type: PLAYER_HIT_BLOCK,
+  //     playerRenderState,
+  //     block
+  //   }
+  // },
 
-  enemyToPlayer: (enemyRenderState) => {
-    return {
-      type: ENEMY_TO_PLAYER,
-      enemyRenderState
-    }
-  },
+  // enemyToPlayer: (enemyRenderState) => {
+  //   return {
+  //     type: ENEMY_TO_PLAYER,
+  //     enemyRenderState
+  //   }
+  // },
 
-  playerToEnemy: (playerRenderState) => {
-    return {
-      type: PLAYER_TO_ENEMY,
-      playerRenderState
-    }
-  },
+  // playerToEnemy: (playerRenderState) => {
+  //   return {
+  //     type: PLAYER_TO_ENEMY,
+  //     playerRenderState
+  //   }
+  // },
 
-  playerHitPlayer: (player1, player2) => {
-    return {
-      type: PLAYER_HIT_PLAYER,
-      player1,
-      player2
-    }
-  },
+  // playerHitPlayer: (player1, player2) => {
+  //   return {
+  //     type: PLAYER_HIT_PLAYER,
+  //     player1,
+  //     player2
+  //   }
+  // },
 
 
   stoneHitStone: (stone1, stone2) => {
@@ -132,5 +132,13 @@ export const action = {
       stoneRenderState,
       block
     }
+  },
+
+  playerAllDie: () => {
+
+  },
+
+  enemyAllDie: () => {
+    
   }
 }

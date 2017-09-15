@@ -158,7 +158,6 @@ function stoneReducer (state = initStoneState, action = {}) {
         state.enemies.splice(enemyIndex, 1)
         state.players.push(stone)
         stone.toggleType()
-        // store.dispatch(actions.enemyToPlayer(stoneRenderState))
       }
       else if (block.type === blockType.TRANSFER_ENEMY
         && stone.type === stoneType.PLAYER) {

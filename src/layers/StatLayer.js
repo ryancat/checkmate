@@ -58,16 +58,20 @@ export default class StatLayer extends BaseLayer {
     this.element.height = height
 
     ctx.fillStyle = defaultTheme.STAT_BACKGROUND_COLOR
-    ctx.fillRect(0, 0, width, height)
+    ctx.fillRect(0, height * 0.9, width, height)
 
     // Get level
     let levelInfo = 'Level: ' + level,
         moveInfo = 'Move: ' + move,
+        statInfo = levelInfo + ' | ' + moveInfo,
         directionsInfo = directions.join('')
 
     ctx.fillStyle = defaultTheme.FONT_COLOR
     ctx.font = height * 0.03 + 'px ' + defaultTheme.FONT
-    ctx.fillText(levelInfo + ' | ' + moveInfo, 10, height * 0.945)
+
+    ctx.fillText(statInfo, 
+      (width - ctx.measureText(statInfo).width) * 0.5,
+      height * 0.945)
 
     // Make sure the directions are not too long
     ctx.font = height * 0.025 + 'px ' + defaultTheme.FONT
