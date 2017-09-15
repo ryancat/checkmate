@@ -77,7 +77,7 @@ function stoneReducer (state = initStoneState, action = {}) {
     }
 
     case UPDATE_DIRTY: {
-      if (!action.stateKey) {
+      if (!action.stateKey || action.stateKey === stateKey.STONE) {
         return Object.assign({}, state, {
           dirty: action.isDirty
         })  
@@ -185,6 +185,81 @@ const initStatState = {}
 
 function statReducer (state = initStatState, action = {}) {
   switch (action.type) {
+    case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
+      const {enemyConfig, playerConfig, gameMapConfig} = levelGenerator.createLevel(action.level)
+
+      return Object.assign({}, state, {
+        rows: gameMapConfig.rows,
+        columns: gameMapConfig.columns,
+        enemies: enemyConfig.enemies,
+        players: playerConfig.players,
+        level: action.level,
+        move: 0,
+        directions: [],
+        // Dirty is true so that we need to update state in layers
+        dirty: true
+      })
+    }
+
+    case UPDATE_DIRTY: {
+      if (!action.stateKey || action.stateKey === stateKey.STAT) {
+        return Object.assign({}, state, {
+          dirty: action.isDirty
+        })  
+      }
+      else {
+        return state
+      }
+    }
+
+    case RIGHT_KEY_DOWN: {
+      let {move, directions} = state
+      move++
+      directions.push(String.fromCharCode(9654))
+
+      return Object.assign({}, state, {
+        directions,
+        move,
+        dirty: true
+      })
+    }
+
+    case DOWN_KEY_DOWN: {
+      let {move, directions} = state
+      move++
+      directions.push(String.fromCharCode(9660))
+
+      return Object.assign({}, state, {
+        directions,
+        move,
+        dirty: true
+      })
+    }
+
+    case LEFT_KEY_DOWN: {
+      let {move, directions} = state
+      move++
+      directions.push(String.fromCharCode(9664))
+
+      return Object.assign({}, state, {
+        directions,
+        move,
+        dirty: true
+      })
+    }
+
+    case UP_KEY_DOWN: {
+      let {move, directions} = state
+      move++
+      directions.push(String.fromCharCode(9650))
+
+      return Object.assign({}, state, {
+        directions,
+        move,
+        dirty: true
+      })
+    }
+
     default:
       return state
   }

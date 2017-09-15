@@ -57,10 +57,8 @@ let game = gameLoop({
    * - Init game state
    */
   init: () => {
-    layers[layerType.GAME_MAP] = new GameMapLayer(rootContainer)
     layers[layerType.STAT] = new StatLayer(rootContainer)
-    // layers[layerType.ENEMY] = new EnemyLayer(rootContainer)
-    // layers[layerType.PLAYER] = new PlayerLayer(rootContainer)
+    layers[layerType.GAME_MAP] = new GameMapLayer(rootContainer)
     layers[layerType.STONE] = new StoneLayer(rootContainer)
 
     store.dispatch(action.goToLevel(1, {
@@ -216,6 +214,6 @@ game.start()
 // TODO LIST
 // 1. Change 'TRANSFER_PLAYER' to 'TRANSFORM_PLAYER', and same to enemy
 // 2.(Done) Merge enemy and player into the same array
-// 3. Start with equal number of stones
+// 3.(Done) Start with equal number of stones
 // 4. Create bot to play with me
 // 5. Create levels (with more enemies and less players)

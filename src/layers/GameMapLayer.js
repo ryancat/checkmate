@@ -22,7 +22,7 @@ export default class GameMapLayer extends BaseLayer {
 
     let {columns, rows, blocks} = newState,
         width = this.container.offsetWidth,
-        height = this.container.offsetHeight,
+        height = this.container.offsetHeight * 0.9,
         widthPerBlock = width / columns,
         heightPerBlock = height / rows,
         xLines = [],
@@ -83,7 +83,7 @@ export default class GameMapLayer extends BaseLayer {
     this.dirty = false
 
     let width = this.container.offsetWidth
-    let height = this.container.offsetHeight
+    let height = this.container.offsetHeight * 0.9
     let {xLines, yLines, blockRenderStates} = this.renderState
 
     this.element.width = width
@@ -91,7 +91,13 @@ export default class GameMapLayer extends BaseLayer {
     this.context.fillStyle = defaultTheme.BACKGROUND_COLOR
     this.context.fillRect(0, 0, width, height)
 
-    this.context.fillStyle = defaultTheme.EDGE_COLOR
+    blockRenderStates.forEach((blockRenderState) => {
+      this.context.fillStyle = blockRenderState.fillStyle
+      this.context.fillRect(blockRenderState.x, blockRenderState.y, blockRenderState.width, blockRenderState.height)
+    })
+
+    this.context.strokeStyle = defaultTheme.EDGE_COLOR
+    this.context.lineWidth = defaultTheme.EDGE_LINE_WIDTH
     this.context.beginPath()
 
     xLines.forEach((xLine) => {
@@ -104,11 +110,6 @@ export default class GameMapLayer extends BaseLayer {
       this.context.moveTo(yLine.x, yLine.y0)
       this.context.lineTo(yLine.x, yLine.y1)
       this.context.stroke()
-    })
-
-    blockRenderStates.forEach((blockRenderState) => {
-      this.context.fillStyle = blockRenderState.fillStyle
-      this.context.fillRect(blockRenderState.x, blockRenderState.y, blockRenderState.width, blockRenderState.height)
     })
   }
 }

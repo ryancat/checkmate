@@ -24,15 +24,12 @@ export default class StoneLayer extends BaseLayer {
     let {columns, rows, enemies, players} = newState,
         stones = enemies.concat(players),
         width = this.container.offsetWidth,
-        height = this.container.offsetHeight,
+        height = this.container.offsetHeight * 0.9,
         widthPerBlock = width / columns,
         heightPerBlock = height / rows
 
     this.finalRenderState = stones.map((stone) => {
-      let {row, column} = stone.position,
-          centerX = column * widthPerBlock + widthPerBlock / 2,
-          centerY = row * heightPerBlock + heightPerBlock / 2,
-          radius = Math.min(widthPerBlock, heightPerBlock) * 0.8 / 2 
+      let {row, column} = stone.position
 
       return {
         x: column * widthPerBlock + widthPerBlock / 2,
@@ -106,6 +103,9 @@ export default class StoneLayer extends BaseLayer {
         else {
           rstate.y -= Math.min(deltaDistance, Math.abs(totalDistanceY))
         }
+
+        // Radius will change immediately
+        rstate.radius = fstate.radius
       })
 
       // Remove from render states
