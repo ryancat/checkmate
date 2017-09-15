@@ -17,7 +17,9 @@ import {
   STONE_HIT_BLOCK,
   PLAYER_ALL_DIE,
   ENEMY_ALL_DIE,
-  RENDER_STATE_CLEAR
+  RENDER_STATE_CLEAR,
+  SHOW_MESSAGE,
+  HIDE_MESSAGE
 } from './action'
 
 /*** Map Reducer ***/
@@ -311,9 +313,46 @@ function statReducer (state = initStatState, action = {}) {
   }
 }
 
+let initMessageState = {}
+
+function messageReducer (state = initMessageState, action = {}) {
+  switch (action.type) {
+    case SHOW_MESSAGE: {
+      return Object.assign({}, state, {
+        showMessage: true,
+        gameTitle: 'Checkmate!',
+        gameIntro: 'You are the WHITE stones and computer will be the BLAKC ones. Move your stones with arrow keys, but all enemies will move on the OPPOSITE direction with you. Hit enemies will perish both stones, so use it wisely... You can also use the super power from transform blocks to turn one stone to another! Whoever stays WIN!',
+        dirty: true
+      })
+    }
+
+    case HIDE_MESSAGE: {
+      return Object.assign({}, state, {
+        showMessage: false,
+        dirty: true
+      })
+    }
+
+    case UPDATE_DIRTY: {
+      if (!action.stateKey || action.stateKey === stateKey.MESSAGE) {
+        return Object.assign({}, state, {
+          dirty: action.isDirty
+        })  
+      }
+      else {
+        return state
+      }
+    }
+
+    default:
+      return state
+  }
+}
+
 let reducerMap = {}
 reducerMap[stateKey.GAME_MAP] = gameMapReducer
 reducerMap[stateKey.STAT] = statReducer
 reducerMap[stateKey.STONE] = stoneReducer
+reducerMap[stateKey.MESSAGE] = messageReducer
 
 export default combineReducer(reducerMap)

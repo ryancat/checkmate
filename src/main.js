@@ -5,12 +5,13 @@ import gameLoop from './gameLoop'
 import GameMapLayer from './layers/GameMapLayer'
 import StatLayer from './layers/StatLayer'
 import StoneLayer from './layers/StoneLayer'
+import MessageLayer from './layers/MessageLayer'
 import {layerType, blockType, stoneType, stateKey} from './enums'
 
 import './main.scss'
 
 const rootContainer = document.getElementById('root')
-let layers = []
+let layers = {}
 let keyMap = {}
 
 // Helper function
@@ -60,25 +61,30 @@ let game = gameLoop({
     layers[layerType.GAME_MAP] = new GameMapLayer(rootContainer)
     layers[layerType.STONE] = new StoneLayer(rootContainer)
     layers[layerType.STAT] = new StatLayer(rootContainer)
+    layers[layerType.MESSAGE] = new MessageLayer(rootContainer)
 
     store.dispatch(action.goToLevel(1))
+    store.dispatch(action.showMessage())
   },
   /**
    * Update the game state for each frame
    * @param  {Number} dt - The time difference since last run
    */
   update: () => {
-    layers.forEach((layer) => {
-      layer.update()
-    })
+    for (let layerKey in layers) {
+      layers[layerKey].update()
+    }
   },
   /**
    * Render the game layers with current game state 
    */
   render: (dt) => {
-    layers.forEach((layer) => {
-      layer.render(dt)
-    })
+    for (let layerKey in layers) {
+      layers[layerKey].render(dt)
+    }
+    // layers.forEach((layer) => {
+    //   layer.render(dt)
+    // })
 
     // Check the render result to see if there is any collision
     // Check if player hit enemy
@@ -244,5 +250,5 @@ game.start()
 // 1. Change 'TRANSFER_PLAYER' to 'TRANSFORM_PLAYER', and same to enemy
 // 2.(Done) Merge enemy and player into the same array
 // 3.(Done) Start with equal number of stones
-// 4. Create bot to play with me
-// 5. Create levels (with more enemies and less players)
+// 4.Create bot to play with me
+// 5.(Done) Create levels (with more enemies and less players)

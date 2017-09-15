@@ -11,17 +11,15 @@ export const blockType = {
 }
 
 export const layerType = {
-  GAME_MAP: 0,
-  STAT: 1,
-  ENEMY: 2,
-  PLAYER: 3,
-  STONE: 4
+  GAME_MAP: 'gameMap',
+  STAT: 'stat',
+  MESSAGE: 'message',
+  STONE: 'stone'
 }
 
 export const stateKey = {
   GAME_MAP: 'gameMap',
   STAT: 'stat',
-  ENEMY: 'enemy',
-  PLAYER: 'player',
+  MESSAGE: 'message',
   STONE: 'stone'
 }

@@ -12,6 +12,8 @@ export const STONE_HIT_BLOCK = 'STONE_HIT_BLOCK'
 export const PLAYER_ALL_DIE = 'PLAYER_ALL_DIE'
 export const ENEMY_ALL_DIE = 'ENEMY_ALL_DIE'
 export const RENDER_STATE_CLEAR = 'RENDER_STATE_CLEAR'
+export const SHOW_MESSAGE = 'SHOW_MESSAGE'
+export const HIDE_MESSAGE = 'HIDE_MESSAGE'
 
 export const action = {
   goToLevel: (level, cleanCache) => {
@@ -19,6 +21,18 @@ export const action = {
       type: GO_TO_LEVEL,
       level,
       cleanCache
+    }
+  },
+
+  showMessage: () => {
+    return {
+      type: SHOW_MESSAGE
+    }
+  },
+
+  hideMessage: () => {
+    return {
+      type: HIDE_MESSAGE
     }
   },
 
