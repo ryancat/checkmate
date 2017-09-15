@@ -13,16 +13,10 @@ import {
   LEFT_KEY_DOWN,
   UP_KEY_DOWN,
   DOWN_KEY_DOWN,
-  PLAYER_HIT_ENEMY,
-  ENEMY_HIT_ENEMY,
-  ENEMY_HIT_BLOCK,
-  PLAYER_HIT_BLOCK,
-  ENEMY_TO_PLAYER,
-  PLAYER_TO_ENEMY,
-  PLAYER_HIT_PLAYER,
-
   STONE_HIT_STONE,
-  STONE_HIT_BLOCK
+  STONE_HIT_BLOCK,
+  PLAYER_ALL_DIE,
+  ENEMY_ALL_DIE
 } from './action'
 
 /*** Map Reducer ***/
@@ -195,6 +189,8 @@ function statReducer (state = initStatState, action = {}) {
         level: action.level,
         move: 0,
         directions: [],
+        playerAllDie: false,
+        enemyAllDie: false,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -257,6 +253,20 @@ function statReducer (state = initStatState, action = {}) {
         move,
         dirty: true
       })
+    }
+
+    case PLAYER_ALL_DIE: {
+      return Object.assign({}, state, {
+        playerAllDie: action.isAllDie,
+        dirty: true
+      }) 
+    }
+
+    case ENEMY_ALL_DIE: {
+      return Object.assign({}, state, {
+        enemyAllDie: action.isAllDie,
+        dirty: true
+      }) 
     }
 
     default:

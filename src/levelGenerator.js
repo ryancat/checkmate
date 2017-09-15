@@ -96,21 +96,6 @@ export default {
           row: i, 
           column: j
         })
-
-        // if (randomChance < blockPercentage) {
-        //   // 10% chance of getting a block
-        //   gameMapConfig.blocks.push(new Block({
-        //     row: i,
-        //     column: j
-        //   }))
-        // }
-        // else if (randomChance < blockPercentage + enemyPercentage) {
-        //   // 30% chance of getting an enemy
-        //   enemyConfig.enemies.push(new Enemy({
-        //     row: i,
-        //     column: j
-        //   }))
-        // }
       }
     }
 

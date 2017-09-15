@@ -83,13 +83,13 @@ export default class GameMapLayer extends BaseLayer {
     this.dirty = false
 
     let width = this.container.offsetWidth
-    let height = this.container.offsetHeight * 0.9
+    let height = this.container.offsetHeight
     let {xLines, yLines, blockRenderStates} = this.renderState
 
     this.element.width = width
     this.element.height = height
     this.context.fillStyle = defaultTheme.BACKGROUND_COLOR
-    this.context.fillRect(0, 0, width, height)
+    this.context.fillRect(0, 0, width, height * 0.9)
 
     blockRenderStates.forEach((blockRenderState) => {
       this.context.fillStyle = blockRenderState.fillStyle

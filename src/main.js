@@ -5,7 +5,7 @@ import gameLoop from './gameLoop'
 import GameMapLayer from './layers/GameMapLayer'
 import StatLayer from './layers/StatLayer'
 import StoneLayer from './layers/StoneLayer'
-import {layerType, blockType, stoneType} from './enums'
+import {layerType, blockType, stoneType, stateKey} from './enums'
 
 import './main.scss'
 
@@ -126,11 +126,20 @@ let game = gameLoop({
       }
     })
 
-    if (playerAllDie) {
-      store.dispatch(action.playerAllDie())
+    let isPlayerAllDieBefore = store.getState(stateKey.STAT).playerAllDie,
+        isEnemyAllDieBefore = store.getState(stateKey.STAT).enemyAllDie
+
+    if (playerAllDie && !isPlayerAllDieBefore) {
+      store.dispatch(action.playerAllDie(true))
     }
-    else if (enemyAllDie) {
-      store.dispatch(action.enemyAllDie())
+    else if (!playerAllDie && isPlayerAllDieBefore) {
+      store.dispatch(action.playerAllDie(false))
+    }
+    else if (enemyAllDie && !isEnemyAllDieBefore) {
+      store.dispatch(action.enemyAllDie(true))
+    }
+    else if (!enemyAllDie && isEnemyAllDieBefore) {
+      store.dispatch(action.enemyAllDie(false))
     }
   }
 })

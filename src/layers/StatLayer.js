@@ -19,15 +19,7 @@ export default class StatLayer extends BaseLayer {
       return
     }
 
-    let {level, directions, move} = newState,
-        width = this.container.offsetWidth,
-        height = this.container.offsetHeight
-
-    this.finalRenderState = {
-      level,
-      directions,
-      move
-    }
+    this.finalRenderState = newState
 
     // We have computed final render state based on new state
     store.dispatch(action.updateDirty(false, this.stateKey))
@@ -52,7 +44,13 @@ export default class StatLayer extends BaseLayer {
     let width = this.container.offsetWidth,
         height = this.container.offsetHeight,
         ctx = this.context,
-        {xLines, yLines, blockRenderStates, level, move, directions} = this.renderState
+        {
+          level, 
+          move, 
+          directions,
+          playerAllDie,
+          enemyAllDie
+        } = this.renderState
 
     this.element.width = width
     this.element.height = height
@@ -60,7 +58,7 @@ export default class StatLayer extends BaseLayer {
     ctx.fillStyle = defaultTheme.STAT_BACKGROUND_COLOR
     ctx.fillRect(0, height * 0.9, width, height)
 
-    // Get level
+    // Get stat information
     let levelInfo = 'Level: ' + level,
         moveInfo = 'Move: ' + move,
         statInfo = levelInfo + ' | ' + moveInfo,
@@ -92,6 +90,32 @@ export default class StatLayer extends BaseLayer {
         ctx.fillStyle = defaultTheme.ENEMY_COLOR
       }
       ctx.fillText(directionsInfo[i], textStartX, height * 0.975)
+    }
+
+    // If player all die, show game over layer
+    if (playerAllDie) {
+      ctx.fillStyle = defaultTheme.GAME_OVER_BACKGROUND
+      ctx.fillRect(0, 0, width, height)
+
+      let loseText = 'You lose...'
+      ctx.fillStyle = defaultTheme.ENEMY_COLOR
+      ctx.font = height * 0.1 + 'px ' + defaultTheme.FONT
+      ctx.fillText(
+        loseText, 
+        (width - ctx.measureText(loseText).width) * 0.5,
+        (height + height * 0.1) * 0.5)
+    }
+    else if (enemyAllDie) {
+      ctx.fillStyle = defaultTheme.GAME_WIN_BACKGROUND
+      ctx.fillRect(0, 0, width, height)
+
+      let winText = 'Level ' + level + ' clear!'
+      ctx.fillStyle = defaultTheme.PLAYER_COLOR
+      ctx.font = height * 0.1 + 'px ' + defaultTheme.FONT
+      ctx.fillText(
+        winText, 
+        (width - ctx.measureText(winText).width) * 0.5,
+        (height + height * 0.1) * 0.5)
     }
   }
 }

@@ -9,7 +9,10 @@ export const defaultTheme = {
   TRANSFER_PLAYER_BLOCK_COLOR: '#ffebd3',
   TRANSFER_ENEMY_BLOCK_COLOR: '#9b7d50',
   FONT: '"Comic Sans MS", cursive, sans-serif',
-  FONT_COLOR: '#444444'
+  FONT_COLOR: '#444444',
+  GAME_STOP_BACKGROUND: 'rgba(211,162,116,0.5)',
+  GAME_OVER_BACKGROUND: 'rgba(234,133,70,0.5)',
+  GAME_WIN_BACKGROUND: 'rgba(153,188,58,0.5)'
 }
 
 export const defaultConfig = {
