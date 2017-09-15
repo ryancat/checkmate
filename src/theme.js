@@ -9,8 +9,9 @@ export const defaultTheme = {
 }
 
 export const defaultConfig = {
-  enemyPercentage: 0.2,
   blockPercentage: 0.1,
+  transferPlayerBlockCount: 1,
+  transferEnemyBlockCount: 1,
   rows: 10,
   columns: 10,
   stoneSpeed: 0.6

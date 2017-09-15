@@ -215,4 +215,7 @@ game.start()
 
 // TODO LIST
 // 1. Change 'TRANSFER_PLAYER' to 'TRANSFORM_PLAYER', and same to enemy
-// 2. Merge enemy and player into the same array
+// 2.(Done) Merge enemy and player into the same array
+// 3. Start with equal number of stones
+// 4. Create bot to play with me
+// 5. Create levels (with more enemies and less players)

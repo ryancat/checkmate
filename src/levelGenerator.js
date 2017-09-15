@@ -14,56 +14,50 @@ export default {
       return levelCache[level]
     }
 
-    let {rows, columns, blockPercentage, enemyPercentage} = defaultConfig, // Update this to create different config per level
-        playerRow = Math.floor(1 + Math.random() * (rows - 2)),
-        playerColumn = Math.floor(1 + Math.random() * (columns - 2)),
-        playerConfig = {
-          players: [new Player({
-            row: playerRow,
-            column: playerColumn
-          })]
-        },
+    let totalSpots = (defaultConfig.columns - 2) * (defaultConfig.rows - 2),
+        // 20% of available spots
+        baseNumOfStones = Math.floor(0.2 * totalSpots),
+        upperNumOfStones = Math.floor(0.5 * totalSpots),
+        // With higher level, more stones
+        // Even number
+        numOfStones = level * 2 + baseNumOfStones
+
+    numOfStones = Math.min(numOfStones, upperNumOfStones)
+    // Make sure it's a even number
+    numOfStones = numOfStones % 2 === 1 ? numOfStones + 1 : numOfStones
+
+    let {rows, columns, blockPercentage} = defaultConfig, // Update this to create different config per level
+        arrayLocator = [],
+        locatorItr = 0,
+        playerStoneCount = 0,
+        enemyStoneCount = 0,
+        transferPlayerBlockCount = 0,
+        transferEnemyBlockCount = 0,
         gameMapConfig = {
           blocks: [],
           rows,
           columns
         },
+        playerConfig = {
+          players: []
+        },
         enemyConfig = {
           enemies: []
         }
 
-    // Generate transfer player block
-    let transferPlayerBlockRow,
-        transferPlayerBlockColumn
+    while (totalSpots--) {
+      let item = playerStoneCount++ < numOfStones / 2 ? new Player() 
+            : enemyStoneCount++ < numOfStones / 2 ? new Enemy() 
+              : transferPlayerBlockCount++ < defaultConfig.transferPlayerBlockCount ? new TransferPlayerBlock() 
+                : transferEnemyBlockCount++ < defaultConfig.transferEnemyBlockCount ? new TransferEnemyBlock()  
+                  : null
 
-    do {
-      transferPlayerBlockRow = Math.floor(1 + Math.random() * (rows - 2))
-      transferPlayerBlockColumn = Math.floor(1 + Math.random() * (columns - 2))
-    } while (transferPlayerBlockRow === playerRow 
-      && transferPlayerBlockColumn === playerColumn)
-
-    gameMapConfig.blocks.push(new TransferPlayerBlock({
-      row: transferPlayerBlockRow,
-      column: transferPlayerBlockColumn
-    }))
-
-    // Generate transfer enemy block
-    let transferEnemyBlockRow,
-        transferEnemyBlockColumn
-
-    do {
-      transferEnemyBlockRow = Math.floor(1 + Math.random() * (rows - 2))
-      transferEnemyBlockColumn = Math.floor(1 + Math.random() * (columns - 2))
-    } while ((transferEnemyBlockRow === playerRow 
-        && transferEnemyBlockColumn === playerColumn)
-      || (transferEnemyBlockRow === transferPlayerBlockRow 
-        && transferEnemyBlockColumn === transferPlayerBlockColumn
-      ))
-
-    gameMapConfig.blocks.push(new TransferEnemyBlock({
-      row: transferEnemyBlockRow,
-      column: transferEnemyBlockColumn
-    }))
+      arrayLocator.push({
+        weight: Math.random(),
+        item
+      })
+    }
+    arrayLocator.sort((weightSpot1, weightSpot2) => weightSpot1.weight - weightSpot2.weight)
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
@@ -76,28 +70,47 @@ export default {
           continue
         }
 
-        if ((i === playerRow && j === playerColumn)
-          || (i === transferPlayerBlockRow && j === transferPlayerBlockColumn)
-          || (i === transferEnemyBlockRow && j === transferEnemyBlockColumn)) {
+        let item = arrayLocator[(i - 1) * (columns - 2) + (j - 1)].item
+        if (item === null) {
+          if (Math.random() < 0.1) {
+            // 10% chance of getting a block
+            gameMapConfig.blocks.push(new Block({
+              row: i,
+              column: j
+            }))
+          }
           continue
         }
-        
-        let randomChance = Math.random()
 
-        if (randomChance < blockPercentage) {
-          // 10% chance of getting a block
-          gameMapConfig.blocks.push(new Block({
-            row: i,
-            column: j
-          }))
+        if (item instanceof Player) {
+          playerConfig.players.push(item)
         }
-        else if (randomChance < blockPercentage + enemyPercentage) {
-          // 30% chance of getting an enemy
-          enemyConfig.enemies.push(new Enemy({
-            row: i,
-            column: j
-          }))
+        else if (item instanceof Enemy) {
+          enemyConfig.enemies.push(item)
         }
+        else if (item instanceof Block) {
+          gameMapConfig.blocks.push(item)
+        }
+
+        item.setPosition({
+          row: i, 
+          column: j
+        })
+
+        // if (randomChance < blockPercentage) {
+        //   // 10% chance of getting a block
+        //   gameMapConfig.blocks.push(new Block({
+        //     row: i,
+        //     column: j
+        //   }))
+        // }
+        // else if (randomChance < blockPercentage + enemyPercentage) {
+        //   // 30% chance of getting an enemy
+        //   enemyConfig.enemies.push(new Enemy({
+        //     row: i,
+        //     column: j
+        //   }))
+        // }
       }
     }
 

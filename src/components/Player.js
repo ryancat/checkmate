@@ -3,7 +3,7 @@ import {stoneType} from '../enums'
 import {defaultTheme} from '../theme'
 
 export default class Player extends Stone {
-  constructor (props) {
+  constructor (props = {}) {
     super(props)
     
     this.type = stoneType.PLAYER

@@ -9,5 +9,9 @@ export default class Block {
     this.type = blockType.BLOCK
     this.fillStyle = defaultTheme.OBSTACLE_BLOCK_COLOR
   }
+
+  setPosition (position) {
+    this.position = new Position(position.row, position.column)
+  }
 }
 

@@ -22,6 +22,12 @@ export default class Stone {
     }
   }
 
+  setPosition (position) {
+    this.position = new Position(position.row, position.column)
+    this.moveHistory = []
+    this.addToMoveHistory(this.position)
+  }
+
   addToMoveHistory (position) {
     this.moveHistory.push(new Position(position.row, position.column))
   }
