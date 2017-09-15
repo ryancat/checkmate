@@ -153,28 +153,32 @@ window.onload = window.onresize = function() {
 }
 
 document.addEventListener('keydown', (evt) => {
-  keyMap[evt.keyCode] = keyMap[evt.keyCode] || {
-    keyCode: evt.keyCode
-  }
-  let keyState = keyMap[evt.keyCode]
+  let stoneState = store.getState(stateKey.STONE)
+  if (stoneState.isPlayerTurn) {
+    keyMap[evt.keyCode] = keyMap[evt.keyCode] || {
+      keyCode: evt.keyCode
+    }
+    let keyState = keyMap[evt.keyCode]
 
-  if (!keyState.press) {
-    keyState.press = true
-    switch (keyState.keyCode) {
-      case 37: // Left
-        store.dispatch(action.leftKeyDown())
-        break
-      case 38: // Up
-        store.dispatch(action.upKeyDown())
-        break
-      case 39: // Right
-        store.dispatch(action.rightKeyDown())
-        break
-      case 40: // Down
-        store.dispatch(action.downKeyDown())
-        break
+    if (!keyState.press) {
+      keyState.press = true
+      switch (keyState.keyCode) {
+        case 37: // Left
+          store.dispatch(action.leftKeyDown())
+          break
+        case 38: // Up
+          store.dispatch(action.upKeyDown())
+          break
+        case 39: // Right
+          store.dispatch(action.rightKeyDown())
+          break
+        case 40: // Down
+          store.dispatch(action.downKeyDown())
+          break
+      }
     }
   }
+  
 })
 
 document.addEventListener('keyup', (evt) => {

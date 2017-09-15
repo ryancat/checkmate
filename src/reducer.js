@@ -19,7 +19,8 @@ import {
   ENEMY_ALL_DIE,
   RENDER_STATE_CLEAR,
   SHOW_MESSAGE,
-  HIDE_MESSAGE
+  HIDE_MESSAGE,
+  CHANGE_TURN
 } from './action'
 
 /*** Map Reducer ***/
@@ -35,6 +36,7 @@ function gameMapReducer (state = initGameMapState, action = {}) {
         columns: gameMapConfig.columns,
         blocks: gameMapConfig.blocks,
         clearRenderState: true,
+        isPlayerTurn: true,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -43,12 +45,20 @@ function gameMapReducer (state = initGameMapState, action = {}) {
     case RENDER_STATE_CLEAR: {
       if (action.layerType === layerType.GAME_MAP) {
         return Object.assign({}, state, {
-          clearRenderState: false
+          clearRenderState: false,
+          dirty: true
         })
       }
       else {
         return state
       }
+    }
+
+    case CHANGE_TURN: {
+      return Object.assign({}, state, {
+        isPlayerTurn: action.isPlayerTurn,
+        dirty: true
+      }) 
     }
 
     case UPDATE_DIRTY: {
@@ -80,7 +90,9 @@ function stoneReducer (state = initStoneState, action = {}) {
         columns: gameMapConfig.columns,
         enemies: enemyConfig.enemies,
         players: playerConfig.players,
+        blocks: gameMapConfig.blocks,
         clearRenderState: true,
+        isPlayerTurn: true,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -89,12 +101,100 @@ function stoneReducer (state = initStoneState, action = {}) {
     case RENDER_STATE_CLEAR: {
       if (action.layerType === layerType.STONE) {
         return Object.assign({}, state, {
-          clearRenderState: false
+          clearRenderState: false,
+          dirty: true
         })
       }
       else {
         return state
       }
+    }
+
+    case CHANGE_TURN: {
+      let {isPlayerTurn} = action,
+          {enemies, players, blocks} = state
+      
+      if (!isPlayerTurn) {
+        setTimeout(() => {
+          // Need to play as enemy
+          // GREEDY ENEMIES!!
+          let moveUpScore = 0,
+              moveDownScore = 0,
+              moveLeftScore = 0,
+              moveRightScore = 0
+
+          let playerPositions = players.filter((player) => player.alive).map((player) => player.position),
+              transferPlayerBlockPositions = blocks.filter((block) => block.type === blockType.TRANSFER_PLAYER)
+          
+          enemies = enemies.filter((enemy) => enemy.alive)
+          enemies.forEach((enemy) => {
+            let {column, row} = enemy.position
+            // If move up
+            moveUpScore += playerPositions.filter((playerPosition) => playerPosition.column === column && playerPosition.row === row - 1).length
+            moveUpScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row - 1).length
+            // If move down
+            moveDownScore += playerPositions.filter((playerPosition) => playerPosition.column === column && playerPosition.row === row + 1).length
+            moveDownScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row + 1).length
+            // If move left
+            moveLeftScore += playerPositions.filter((playerPosition) => playerPosition.row === row && playerPosition.column === column - 1).length
+            moveLeftScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column - 1).length
+            // If move right
+            moveRightScore += playerPositions.filter((playerPosition) => playerPosition.row === row && playerPosition.column === column + 1).length
+            moveRightScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column + 1).length
+          })
+
+          // Random move on the top scores directions
+          let maxScore = Math.max(moveUpScore, moveDownScore, moveLeftScore, moveRightScore),
+              maxScoreMoves = []
+
+          if (maxScore === moveUpScore) {
+            maxScoreMoves.push('up')
+          }
+          
+          if (maxScore === moveRightScore) {
+            maxScoreMoves.push('right')
+          }
+          
+          if (maxScore === moveDownScore) {
+            maxScoreMoves.push('down')
+          }
+          
+          if (maxScore === moveLeftScore) {
+            maxScoreMoves.push('left')
+          }
+
+          let numOfPossibleMoves = maxScoreMoves.length,
+              chance = Math.random()
+
+          for (let i = 0; i < numOfPossibleMoves; i++) {
+
+            if (chance < (i + 1) / numOfPossibleMoves) {
+              switch (maxScoreMoves[i]) {
+                case 'up': 
+                  return store.dispatch(actions.downKeyDown())
+
+                case 'right':
+                  return store.dispatch(actions.leftKeyDown())
+
+                case 'down':
+                  return store.dispatch(actions.upKeyDown())
+
+                case 'left':
+                  return store.dispatch(actions.rightKeyDown())
+
+                default:
+                  return store.dispatch(actions.downKeyDown())
+              }
+            }
+          } 
+
+        }, 1000)
+      }
+
+      return Object.assign({}, state, {
+        isPlayerTurn,
+        dirty: true
+      }) 
     }
 
     case UPDATE_DIRTY: {
@@ -219,6 +319,7 @@ function statReducer (state = initStatState, action = {}) {
         playerAllDie: false,
         enemyAllDie: false,
         clearRenderState: true,
+        isPlayerTurn: true,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -227,12 +328,20 @@ function statReducer (state = initStatState, action = {}) {
     case RENDER_STATE_CLEAR: {
       if (action.layerType === layerType.STAT) {
         return Object.assign({}, state, {
-          clearRenderState: false
+          clearRenderState: false,
+          dirty: true
         })
       }
       else {
         return state
       }
+    }
+
+    case CHANGE_TURN: {
+      return Object.assign({}, state, {
+        isPlayerTurn: action.isPlayerTurn,
+        dirty: true
+      }) 
     }
 
     case UPDATE_DIRTY: {
@@ -250,6 +359,7 @@ function statReducer (state = initStatState, action = {}) {
       let {move, directions} = state
       move++
       directions.push(String.fromCharCode(9654))
+      store.dispatch(actions.changeTurn(move % 2 === 0))
 
       return Object.assign({}, state, {
         directions,
@@ -262,6 +372,7 @@ function statReducer (state = initStatState, action = {}) {
       let {move, directions} = state
       move++
       directions.push(String.fromCharCode(9660))
+      store.dispatch(actions.changeTurn(move % 2 === 0))
 
       return Object.assign({}, state, {
         directions,
@@ -274,6 +385,7 @@ function statReducer (state = initStatState, action = {}) {
       let {move, directions} = state
       move++
       directions.push(String.fromCharCode(9664))
+      store.dispatch(actions.changeTurn(move % 2 === 0))
 
       return Object.assign({}, state, {
         directions,
@@ -286,6 +398,7 @@ function statReducer (state = initStatState, action = {}) {
       let {move, directions} = state
       move++
       directions.push(String.fromCharCode(9650))
+      store.dispatch(actions.changeTurn(move % 2 === 0))
 
       return Object.assign({}, state, {
         directions,

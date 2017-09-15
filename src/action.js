@@ -14,6 +14,7 @@ export const ENEMY_ALL_DIE = 'ENEMY_ALL_DIE'
 export const RENDER_STATE_CLEAR = 'RENDER_STATE_CLEAR'
 export const SHOW_MESSAGE = 'SHOW_MESSAGE'
 export const HIDE_MESSAGE = 'HIDE_MESSAGE'
+export const CHANGE_TURN = 'CHANGE_TURN'
 
 export const action = {
   goToLevel: (level, cleanCache) => {
@@ -33,6 +34,13 @@ export const action = {
   hideMessage: () => {
     return {
       type: HIDE_MESSAGE
+    }
+  },
+
+  changeTurn: (isPlayerTurn) => {
+    return {
+      type: CHANGE_TURN,
+      isPlayerTurn
     }
   },
 
