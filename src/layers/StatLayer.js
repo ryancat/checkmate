@@ -10,6 +10,24 @@ export default class StatLayer extends BaseLayer {
     super(container)
     this.type = layerType.STAT
     this.stateKey = stateKey.STAT
+
+    // Make sure context is correct
+    this.handleClick = this.handleClick.bind(this)
+
+    document.addEventListener('click', this.handleClick)
+    document.addEventListener('touchend', this.handleClick)
+  }
+
+  handleClick (evt) {
+    let {playerAllDie, enemyAllDie, level} = this.renderState
+    if (playerAllDie) {
+      // This will trigger retry
+      store.dispatch(action.goToLevel(level, true))
+    }
+    else if (enemyAllDie) {
+      // This will trigger next level
+      store.dispatch(action.goToLevel(level + 1, true))
+    }
   }
 
   update () {
@@ -20,6 +38,11 @@ export default class StatLayer extends BaseLayer {
     }
 
     this.finalRenderState = newState
+
+    if (newState.clearRenderState) {
+      this.renderState = null
+      store.dispatch(action.renderStateClear(this.type))
+    }
 
     // We have computed final render state based on new state
     store.dispatch(action.updateDirty(false, this.stateKey))
@@ -97,13 +120,21 @@ export default class StatLayer extends BaseLayer {
       ctx.fillStyle = defaultTheme.GAME_OVER_BACKGROUND
       ctx.fillRect(0, 0, width, height)
 
-      let loseText = 'You lose...'
+      let loseText = 'You lose'
       ctx.fillStyle = defaultTheme.ENEMY_COLOR
       ctx.font = height * 0.1 + 'px ' + defaultTheme.FONT
       ctx.fillText(
         loseText, 
         (width - ctx.measureText(loseText).width) * 0.5,
         (height + height * 0.1) * 0.5)
+
+      let retryText = 'Click to retry'
+      ctx.fillStyle = defaultTheme.ENEMY_COLOR
+      ctx.font = height * 0.03 + 'px ' + defaultTheme.FONT
+      ctx.fillText(
+        retryText, 
+        (width - ctx.measureText(retryText).width) * 0.5,
+        (height + height * 0.2) * 0.5)
     }
     else if (enemyAllDie) {
       ctx.fillStyle = defaultTheme.GAME_WIN_BACKGROUND
@@ -116,6 +147,14 @@ export default class StatLayer extends BaseLayer {
         winText, 
         (width - ctx.measureText(winText).width) * 0.5,
         (height + height * 0.1) * 0.5)
+
+      let nextLevelText = 'Click to next level'
+      ctx.fillStyle = defaultTheme.PLAYER_COLOR
+      ctx.font = height * 0.03 + 'px ' + defaultTheme.FONT
+      ctx.fillText(
+        nextLevelText, 
+        (width - ctx.measureText(nextLevelText).width) * 0.5,
+        (height + height * 0.2) * 0.5)
     }
   }
 }

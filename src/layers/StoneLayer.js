@@ -28,6 +28,11 @@ export default class StoneLayer extends BaseLayer {
         widthPerBlock = width / columns,
         heightPerBlock = height / rows
 
+    if (newState.clearRenderState) {
+      this.renderState = null
+      store.dispatch(action.renderStateClear(this.type))
+    }
+
     this.finalRenderState = stones.map((stone) => {
       let {row, column} = stone.position
 

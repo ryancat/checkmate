@@ -1,6 +1,6 @@
 import store from './store'
 import {combineReducer} from './stateManager'
-import {stateKey, blockType, stoneType} from './enums'
+import {stateKey, blockType, stoneType, layerType} from './enums'
 import levelGenerator from './levelGenerator'
 import Position from './components/Position'
 import Player from './components/Player'
@@ -16,7 +16,8 @@ import {
   STONE_HIT_STONE,
   STONE_HIT_BLOCK,
   PLAYER_ALL_DIE,
-  ENEMY_ALL_DIE
+  ENEMY_ALL_DIE,
+  RENDER_STATE_CLEAR
 } from './action'
 
 /*** Map Reducer ***/
@@ -25,15 +26,27 @@ const initGameMapState = {}
 function gameMapReducer (state = initGameMapState, action = {}) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
-      const {gameMapConfig} = levelGenerator.createLevel(action.level)
+      const {gameMapConfig} = levelGenerator.createLevel(action.level, action.cleanCache)
 
       return Object.assign({}, state, {
         rows: gameMapConfig.rows,
         columns: gameMapConfig.columns,
         blocks: gameMapConfig.blocks,
+        clearRenderState: true,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
+    }
+
+    case RENDER_STATE_CLEAR: {
+      if (action.layerType === layerType.GAME_MAP) {
+        return Object.assign({}, state, {
+          clearRenderState: false
+        })
+      }
+      else {
+        return state
+      }
     }
 
     case UPDATE_DIRTY: {
@@ -58,16 +71,28 @@ const initStoneState = {}
 function stoneReducer (state = initStoneState, action = {}) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
-      const {enemyConfig, playerConfig, gameMapConfig} = levelGenerator.createLevel(action.level)
+      const {enemyConfig, playerConfig, gameMapConfig} = levelGenerator.createLevel(action.level, action.cleanCache)
 
       return Object.assign({}, state, {
         rows: gameMapConfig.rows,
         columns: gameMapConfig.columns,
         enemies: enemyConfig.enemies,
         players: playerConfig.players,
+        clearRenderState: true,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
+    }
+
+    case RENDER_STATE_CLEAR: {
+      if (action.layerType === layerType.STONE) {
+        return Object.assign({}, state, {
+          clearRenderState: false
+        })
+      }
+      else {
+        return state
+      }
     }
 
     case UPDATE_DIRTY: {
@@ -179,7 +204,7 @@ const initStatState = {}
 function statReducer (state = initStatState, action = {}) {
   switch (action.type) {
     case GO_TO_LEVEL: { // ESLint: Need to wrap the case into block to use let/const in ES6
-      const {enemyConfig, playerConfig, gameMapConfig} = levelGenerator.createLevel(action.level)
+      const {enemyConfig, playerConfig, gameMapConfig} = levelGenerator.createLevel(action.level, action.cleanCache)
 
       return Object.assign({}, state, {
         rows: gameMapConfig.rows,
@@ -191,9 +216,21 @@ function statReducer (state = initStatState, action = {}) {
         directions: [],
         playerAllDie: false,
         enemyAllDie: false,
+        clearRenderState: true,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
+    }
+
+    case RENDER_STATE_CLEAR: {
+      if (action.layerType === layerType.STAT) {
+        return Object.assign({}, state, {
+          clearRenderState: false
+        })
+      }
+      else {
+        return state
+      }
     }
 
     case UPDATE_DIRTY: {

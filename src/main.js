@@ -61,10 +61,7 @@ let game = gameLoop({
     layers[layerType.STONE] = new StoneLayer(rootContainer)
     layers[layerType.STAT] = new StatLayer(rootContainer)
 
-    store.dispatch(action.goToLevel(1, {
-      width: rootContainer.offsetWidth,
-      height: rootContainer.offsetHeight
-    }))
+    store.dispatch(action.goToLevel(1))
   },
   /**
    * Update the game state for each frame

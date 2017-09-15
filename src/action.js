@@ -11,13 +11,14 @@ export const STONE_HIT_STONE = 'STONE_HIT_STONE'
 export const STONE_HIT_BLOCK = 'STONE_HIT_BLOCK'
 export const PLAYER_ALL_DIE = 'PLAYER_ALL_DIE'
 export const ENEMY_ALL_DIE = 'ENEMY_ALL_DIE'
+export const RENDER_STATE_CLEAR = 'RENDER_STATE_CLEAR'
 
 export const action = {
-  goToLevel: (level, gameEnv = {}) => {
+  goToLevel: (level, cleanCache) => {
     return {
       type: GO_TO_LEVEL,
       level,
-      gameEnv
+      cleanCache
     }
   },
 
@@ -84,6 +85,13 @@ export const action = {
     return {
       type: ENEMY_ALL_DIE,
       isAllDie
+    }
+  },
+
+  renderStateClear: (layerType) => {
+    return {
+      type: RENDER_STATE_CLEAR,
+      layerType
     }
   }
 }

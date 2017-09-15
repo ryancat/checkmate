@@ -29,6 +29,11 @@ export default class GameMapLayer extends BaseLayer {
         yLines = [],
         blockRenderStates
 
+    if (newState.clearRenderState) {
+      this.renderState = null
+      store.dispatch(action.renderStateClear(this.type))
+    }
+
     for (let i = 0; i <= columns; i++) {
       yLines.push({
         x: i * widthPerBlock,
