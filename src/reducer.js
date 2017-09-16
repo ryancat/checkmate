@@ -425,7 +425,7 @@ function statReducer (state = initStatState, action = {}) {
     case RIGHT_KEY_DOWN: {
       let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(isPlayerTurn ? String.fromCharCode(9658) : String.fromCharCode(9668))
+      directions.push(isPlayerTurn ? String.fromCharCode(8680) : String.fromCharCode(8678))
       setTimeout(() => {
         store.dispatch(actions.changeTurn(move % 2 === 0))
       })
@@ -440,7 +440,7 @@ function statReducer (state = initStatState, action = {}) {
     case DOWN_KEY_DOWN: {
       let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(isPlayerTurn ? String.fromCharCode(9660) : String.fromCharCode(9650))
+      directions.push(isPlayerTurn ? String.fromCharCode(8681) : String.fromCharCode(8679))
       setTimeout(() => {
         store.dispatch(actions.changeTurn(move % 2 === 0))
       })
@@ -455,7 +455,7 @@ function statReducer (state = initStatState, action = {}) {
     case LEFT_KEY_DOWN: {
       let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(isPlayerTurn ? String.fromCharCode(9668) : String.fromCharCode(9658))
+      directions.push(isPlayerTurn ? String.fromCharCode(8678) : String.fromCharCode(8680))
       setTimeout(() => {
         store.dispatch(actions.changeTurn(move % 2 === 0))
       })
@@ -470,7 +470,7 @@ function statReducer (state = initStatState, action = {}) {
     case UP_KEY_DOWN: {
       let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(isPlayerTurn ? String.fromCharCode(9650): String.fromCharCode(9660))
+      directions.push(isPlayerTurn ? String.fromCharCode(8679): String.fromCharCode(8681))
       setTimeout(() => {
         store.dispatch(actions.changeTurn(move % 2 === 0))
       })
