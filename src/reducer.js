@@ -356,10 +356,12 @@ function statReducer (state = initStatState, action = {}) {
     }
 
     case RIGHT_KEY_DOWN: {
-      let {move, directions} = state
+      let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(String.fromCharCode(9654))
-      store.dispatch(actions.changeTurn(move % 2 === 0))
+      directions.push(isPlayerTurn ? String.fromCharCode(9654) : String.fromCharCode(9664))
+      setTimeout(() => {
+        store.dispatch(actions.changeTurn(move % 2 === 0))
+      })
 
       return Object.assign({}, state, {
         directions,
@@ -369,10 +371,12 @@ function statReducer (state = initStatState, action = {}) {
     }
 
     case DOWN_KEY_DOWN: {
-      let {move, directions} = state
+      let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(String.fromCharCode(9660))
-      store.dispatch(actions.changeTurn(move % 2 === 0))
+      directions.push(isPlayerTurn ? String.fromCharCode(9660) : String.fromCharCode(9650))
+      setTimeout(() => {
+        store.dispatch(actions.changeTurn(move % 2 === 0))
+      })
 
       return Object.assign({}, state, {
         directions,
@@ -382,10 +386,12 @@ function statReducer (state = initStatState, action = {}) {
     }
 
     case LEFT_KEY_DOWN: {
-      let {move, directions} = state
+      let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(String.fromCharCode(9664))
-      store.dispatch(actions.changeTurn(move % 2 === 0))
+      directions.push(isPlayerTurn ? String.fromCharCode(9664) : String.fromCharCode(9654))
+      setTimeout(() => {
+        store.dispatch(actions.changeTurn(move % 2 === 0))
+      })
 
       return Object.assign({}, state, {
         directions,
@@ -395,10 +401,12 @@ function statReducer (state = initStatState, action = {}) {
     }
 
     case UP_KEY_DOWN: {
-      let {move, directions} = state
+      let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(String.fromCharCode(9650))
-      store.dispatch(actions.changeTurn(move % 2 === 0))
+      directions.push(isPlayerTurn ? String.fromCharCode(9650): String.fromCharCode(9660))
+      setTimeout(() => {
+        store.dispatch(actions.changeTurn(move % 2 === 0))
+      })
 
       return Object.assign({}, state, {
         directions,

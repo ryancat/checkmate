@@ -72,7 +72,8 @@ export default class StatLayer extends BaseLayer {
           move, 
           directions,
           playerAllDie,
-          enemyAllDie
+          enemyAllDie,
+          isPlayerTurn
         } = this.renderState
 
     this.element.width = width
@@ -83,8 +84,9 @@ export default class StatLayer extends BaseLayer {
 
     // Get stat information
     let levelInfo = 'Level: ' + level,
+        turnInfo = (isPlayerTurn ? 'Your' : 'Enemy\'s') + ' turn',
         moveInfo = 'Move: ' + move,
-        statInfo = levelInfo + ' | ' + moveInfo,
+        statInfo = levelInfo + ' | ' + turnInfo + ' | ' + moveInfo,
         directionsInfo = directions.join('')
 
     ctx.fillStyle = defaultTheme.FONT_COLOR
