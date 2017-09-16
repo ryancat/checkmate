@@ -124,11 +124,11 @@ export default class StatLayer extends BaseLayer {
 
       let loseText = 'You lose'
       ctx.fillStyle = defaultTheme.ENEMY_COLOR
-      ctx.font = height * 0.1 + 'px ' + defaultTheme.FONT
+      ctx.font = height * 0.07 + 'px ' + defaultTheme.FONT
       ctx.fillText(
         loseText, 
         (width - ctx.measureText(loseText).width) * 0.5,
-        (height + height * 0.1) * 0.5)
+        (height + height * 0.07) * 0.5)
 
       let retryText = 'Click to retry'
       ctx.fillStyle = defaultTheme.ENEMY_COLOR
@@ -144,11 +144,11 @@ export default class StatLayer extends BaseLayer {
 
       let winText = 'Level ' + level + ' clear!'
       ctx.fillStyle = defaultTheme.PLAYER_COLOR
-      ctx.font = height * 0.1 + 'px ' + defaultTheme.FONT
+      ctx.font = height * 0.07 + 'px ' + defaultTheme.FONT
       ctx.fillText(
         winText, 
         (width - ctx.measureText(winText).width) * 0.5,
-        (height + height * 0.1) * 0.5)
+        (height + height * 0.07) * 0.5)
 
       let nextLevelText = 'Click to next level'
       ctx.fillStyle = defaultTheme.PLAYER_COLOR

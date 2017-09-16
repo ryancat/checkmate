@@ -93,6 +93,7 @@ function stoneReducer (state = initStoneState, action = {}) {
         blocks: gameMapConfig.blocks,
         clearRenderState: true,
         isPlayerTurn: true,
+        level: action.level,
         // Dirty is true so that we need to update state in layers
         dirty: true
       })
@@ -112,7 +113,7 @@ function stoneReducer (state = initStoneState, action = {}) {
 
     case CHANGE_TURN: {
       let {isPlayerTurn} = action,
-          {enemies, players, blocks} = state
+          {enemies, players, blocks, rows, columns, level} = state
       
       if (!isPlayerTurn) {
         setTimeout(() => {
@@ -124,24 +125,90 @@ function stoneReducer (state = initStoneState, action = {}) {
               moveRightScore = 0
 
           let playerPositions = players.filter((player) => player.alive).map((player) => player.position),
-              transferPlayerBlockPositions = blocks.filter((block) => block.type === blockType.TRANSFER_PLAYER)
+              enemyPositions = enemies.filter((enemy) => enemy.alive).map((enemy) => enemy.position),
+              transferPlayerBlockPositions = blocks.filter((block) => block.type === blockType.TRANSFER_PLAYER),
+              transferEnemyBlockPositions = blocks.filter((block) => block.type === blockType.TRANSFER_ENEMY)
           
-          enemies = enemies.filter((enemy) => enemy.alive)
-          enemies.forEach((enemy) => {
-            let {column, row} = enemy.position
+          if (enemyPositions.length === 0 || playerPositions.length === 0) {
+            return
+          }
+
+          // Enemy knows to kill player if possible
+          enemyPositions.forEach((enemyPosition) => {
+            let {column, row} = enemyPosition
             // If move up
             moveUpScore += playerPositions.filter((playerPosition) => playerPosition.column === column && playerPosition.row === row - 1).length
-            moveUpScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row - 1).length
             // If move down
             moveDownScore += playerPositions.filter((playerPosition) => playerPosition.column === column && playerPosition.row === row + 1).length
-            moveDownScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row + 1).length
             // If move left
             moveLeftScore += playerPositions.filter((playerPosition) => playerPosition.row === row && playerPosition.column === column - 1).length
-            moveLeftScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column - 1).length
             // If move right
             moveRightScore += playerPositions.filter((playerPosition) => playerPosition.row === row && playerPosition.column === column + 1).length
-            moveRightScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column + 1).length
           })
+
+          // Enemy knows to move towards player
+          let playerPositionXs = playerPositions.map((playerPosition) => playerPosition.column),
+              playerPositionYs = playerPositions.map((playerPosition) => playerPosition.row),
+              playerPositionAvgXs = playerPositionXs.reduce((x1, x2) => x1 + x2) / playerPositionXs.length,
+              playerPositionAvgYs = playerPositionYs.reduce((y1, y2) => y1 + y2) / playerPositionYs.length,
+              enemyPositionXs = enemyPositions.map((enemyPosition) => enemyPosition.column),
+              enemyPositionYs = enemyPositions.map((enemyPosition) => enemyPosition.row),
+              enemyPositionAvgXs = enemyPositionXs.reduce((x1, x2) => x1 + x2) / enemyPositionXs.length,
+              enemyPositionAvgYs = enemyPositionYs.reduce((y1, y2) => y1 + y2) / enemyPositionYs.length,
+              columnRate = (playerPositionAvgXs - enemyPositionAvgXs) / columns,
+              rowRate = (playerPositionAvgYs - enemyPositionAvgYs) / rows
+              
+          // TODO: compare the avg value and decide move direction
+          if (Math.abs(rowRate) > Math.abs(columnRate)) {
+            // More close on the column side
+            if (columnRate > 0 && Math.random() < 0.5) {
+              // Move on the right side
+              moveRightScore += 0.5
+            }
+            else if (columnRate < 0 && Math.random() < 0.5) {
+              moveLeftScore += 0.5
+            }
+          }
+          else {
+            // More close on the row side
+            if (rowRate > 0 && Math.random() < 0.5) {
+              // Move on the down side
+              moveDownScore += 0.5
+            }
+            else if (rowRate < 0 && Math.random() < 0.5) {
+              moveUpScore += 0.5
+            }
+          }
+
+          if (level > 1) {
+            // Enemies know how to avoid transfer player block
+            enemyPositions.forEach((enemyPosition) => {
+              let {column, row} = enemyPosition
+              // If move up
+              moveUpScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row - 1).length
+              // If move down
+              moveDownScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row + 1).length
+              // If move left
+              moveLeftScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column - 1).length
+              // If move right
+              moveRightScore -= 2 * transferPlayerBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column + 1).length
+            })
+          }
+
+          if (level > 2) {
+            // Enemies know how to actively transfer player to enemy
+            playerPositions.forEach((playerPosition) => {
+              let {column, row} = playerPosition
+              // If move up (player down)
+              moveUpScore += 2 * transferEnemyBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row + 1).length
+              // If move down (player up)
+              moveDownScore += 2 * transferEnemyBlockPositions.filter((blockPosition) => blockPosition.column === column && blockPosition.row === row - 1).length
+              // If move left (player right)
+              moveLeftScore += 2 * transferEnemyBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column + 1).length
+              // If move right (player left)
+              moveRightScore += 2 * transferEnemyBlockPositions.filter((blockPosition) => blockPosition.row === row && blockPosition.column === column - 1).length
+            })
+          }
 
           // Random move on the top scores directions
           let maxScore = Math.max(moveUpScore, moveDownScore, moveLeftScore, moveRightScore),
@@ -358,7 +425,7 @@ function statReducer (state = initStatState, action = {}) {
     case RIGHT_KEY_DOWN: {
       let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(isPlayerTurn ? String.fromCharCode(9654) : String.fromCharCode(9664))
+      directions.push(isPlayerTurn ? String.fromCharCode(9658) : String.fromCharCode(9668))
       setTimeout(() => {
         store.dispatch(actions.changeTurn(move % 2 === 0))
       })
@@ -388,7 +455,7 @@ function statReducer (state = initStatState, action = {}) {
     case LEFT_KEY_DOWN: {
       let {move, directions, isPlayerTurn} = state
       move++
-      directions.push(isPlayerTurn ? String.fromCharCode(9664) : String.fromCharCode(9654))
+      directions.push(isPlayerTurn ? String.fromCharCode(9668) : String.fromCharCode(9658))
       setTimeout(() => {
         store.dispatch(actions.changeTurn(move % 2 === 0))
       })
@@ -442,7 +509,7 @@ function messageReducer (state = initMessageState, action = {}) {
       return Object.assign({}, state, {
         showMessage: true,
         gameTitle: 'Checkmate!',
-        gameIntro: 'You are the WHITE stones and computer will be the BLAKC ones. Move your stones with arrow keys, but all enemies will move on the OPPOSITE direction with you. Hit enemies will perish both stones, so use it wisely... You can also use the super power from transform blocks to turn one stone to another! Whoever stays WIN!',
+        gameIntro: 'You are the WHITE stones and computer will be the BLAKC ones. Move your stones with arrow keys (or swipe on mobile phone), and all enemies will move on the OPPOSITE direction with you. Hit enemies will perish both stones, so use it wisely... You can also use the super power from transform blocks to turn one stone to another! Whoever stays WIN!',
         dirty: true
       })
     }

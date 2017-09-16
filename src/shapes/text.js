@@ -43,9 +43,8 @@ export function drawTextInWidth (context, props = {}) {
       newTextArr.push(newText)
       newText = ''
     }
-    else {
-      newText += word + ' '
-    }
+    
+    newText += word + ' '
   }
   newTextArr.push(newText)
 
