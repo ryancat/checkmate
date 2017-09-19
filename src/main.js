@@ -207,6 +207,11 @@ function handleTouch (evt) {
     return 
   }
 
+  if (store.getState(stateKey.STAT).playerAllDie 
+    || store.getState(stateKey.STAT).enemyAllDie) {
+    return
+  }
+
   let touch = evt.touches[0]
   switch (evt.type) {
     case 'touchstart':

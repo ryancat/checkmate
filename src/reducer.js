@@ -509,7 +509,7 @@ function messageReducer (state = initMessageState, action = {}) {
       return Object.assign({}, state, {
         showMessage: true,
         gameTitle: 'Checkmate!',
-        gameIntro: 'You are the WHITE stones and computer will be the BLAKC ones. Move your stones with arrow keys (or swipe on mobile phone), and all enemies will move on the OPPOSITE direction with you. Hit enemies will perish both stones, so use it wisely... You can also use the super power from transform blocks to turn one stone to another! Whoever stays WIN!',
+        gameIntro: 'You are the WHITE stones and computer will be the BLACK ones. Move your stones with arrow keys (or swipe on mobile phone), and all enemies will move on the OPPOSITE direction with you. Hit enemies will perish both stones, so use it wisely... You can also use the super power from transform blocks to turn one stone to another! Whoever stays WIN!',
         dirty: true
       })
     }
